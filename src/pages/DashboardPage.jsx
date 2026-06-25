@@ -145,7 +145,6 @@ const DashboardPage = () => {
           </div>
         </div>
       </div>
-      {console.log("profile", profile)}
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-fadeInUp delay-100">
