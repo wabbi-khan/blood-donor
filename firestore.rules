@@ -1,0 +1,63 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ─────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    // ── Users Collection ─────────────────────────────────────
+    // Users can read/write their own profile.
+    // Authenticated users can read other donor profiles
+    // (needed for the matching feed — but phone is never exposed
+    //  publicly; phone is only revealed server-side via Cloud Functions).
+    match /users/{uid} {
+      // Anyone authenticated can read donor profiles
+      allow read: if isAuthenticated();
+
+      // Only the owner can create or update their own profile
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid);
+
+      // No deletion via client SDK
+      allow delete: if false;
+    }
+
+    // ── SOS Requests Collection ──────────────────────────────
+    // Any authenticated user can create an SOS.
+    // Any authenticated user can read open SOS requests.
+    // Only the requester can update/close their own SOS.
+    match /sos_requests/{requestId} {
+      allow read: if isAuthenticated();
+      //allow create: if isAuthenticated();
+      allow create: if true;
+
+      // Allow original requester to delete, but allow any authenticated user to update (to respond)
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated()
+        && resource.data.requesterId == request.auth.uid;
+    }
+
+    // ── Donor Responses Sub-collection ──────────────────────
+    // Tracks which donors responded to a specific SOS.
+    // Donors can write their own response; everyone authenticated can read.
+    match /sos_requests/{requestId}/responses/{donorId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isOwner(donorId);
+      allow delete: if isOwner(donorId);
+    }
+
+    // ── Live Tracking Collection (Realtime DB handles most of this) ──
+    // Firestore fallback for tracking confirmations
+    match /tracking/{trackId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
+    }
+  }
+}

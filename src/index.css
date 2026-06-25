@@ -1,0 +1,243 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800;900&display=swap");
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: dark --default;
+}
+
+/* ────────────────────────────────────────────
+   LifeDrop – Global Design Tokens
+──────────────────────────────────────────── */
+:root {
+  --LifeDrop-red: #e53935;
+  --LifeDrop-red-dark: #b71c1c;
+  --LifeDrop-red-light: #ff6b6b;
+  --LifeDrop-surface: #1a1a2e;
+  --LifeDrop-surface-2: #16213e;
+  --LifeDrop-surface-3: #0f3460;
+  --LifeDrop-text: #e8eaf6;
+  --LifeDrop-text-muted: #9fa8da;
+  --LifeDrop-accent: #e53935;
+  --LifeDrop-border: rgba(255, 255, 255, 0.08);
+}
+
+/* ────────────────────────────────────────────
+   Base Resets & Typography
+──────────────────────────────────────────── */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--LifeDrop-surface);
+  color: var(--LifeDrop-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+}
+
+/* ────────────────────────────────────────────
+   Custom Utility Classes
+──────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--LifeDrop-border);
+  border-radius: 1rem;
+}
+
+.glass-dark {
+  background: rgba(15, 52, 96, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(229, 57, 53, 0.2);
+  border-radius: 1rem;
+}
+
+.btn-LifeDrop {
+  background: linear-gradient(
+    135deg,
+    var(--LifeDrop-red) 0%,
+    var(--LifeDrop-red-dark) 100%
+  );
+  color: white;
+  border: none;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 24px rgba(229, 57, 53, 0.35);
+}
+
+.btn-LifeDrop:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(229, 57, 53, 0.5);
+  background: linear-gradient(
+    135deg,
+    var(--LifeDrop-red-light) 0%,
+    var(--LifeDrop-red) 100%
+  );
+}
+
+.btn-LifeDrop:active {
+  transform: translateY(0);
+}
+
+.btn-outline-LifeDrop {
+  background: transparent;
+  color: var(--LifeDrop-red-light);
+  border: 1.5px solid var(--LifeDrop-red);
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-LifeDrop:hover {
+  background: rgba(229, 57, 53, 0.1);
+  border-color: var(--LifeDrop-red-light);
+  transform: translateY(-1px);
+}
+
+/* ────────────────────────────────────────────
+   Page Layout
+──────────────────────────────────────────── */
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.section-title {
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    var(--LifeDrop-red-light) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ────────────────────────────────────────────
+   Animations
+──────────────────────────────────────────── */
+@keyframes pulse-red {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(229, 57, 53, 0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.15);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.15);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease forwards;
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+.animate-heartbeat {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+.animate-pulse-red {
+  animation: pulse-red 2s ease-in-out infinite;
+}
+
+/* Staggered delays */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+.delay-300 {
+  animation-delay: 0.3s;
+}
+.delay-400 {
+  animation-delay: 0.4s;
+}
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
+/* ────────────────────────────────────────────
+   Scrollbar Styling
+──────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--LifeDrop-surface-2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--LifeDrop-red-dark);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--LifeDrop-red);
+}
+
+/* ────────────────────────────────────────────
+   Leaflet Map overrides
+──────────────────────────────────────────── */
+.leaflet-container {
+  border-radius: 1rem;
+  border: 1px solid var(--LifeDrop-border);
+}
