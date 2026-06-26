@@ -2,7 +2,7 @@
 // LifeDrop — Auth Context
 // Provides auth state throughout the app
 // ────────────────────────────────────────────────────────────
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { onAuthChange, getUserProfile } from "../services/authService";
 
 const AuthContext = createContext(null);
@@ -11,20 +11,30 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const fetchIdRef = useRef(0);
+  const userRef = useRef(null);
 
   useEffect(() => {
     const unsubscribe = onAuthChange(async (firebaseUser) => {
+      fetchIdRef.current += 1;
+      const currentFetch = fetchIdRef.current;
+
+      userRef.current = firebaseUser;
       setUser(firebaseUser);
       if (firebaseUser) {
         try {
           const userProfile = await getUserProfile(firebaseUser.uid);
-          setProfile(userProfile);
+          if (currentFetch === fetchIdRef.current) {
+            setProfile(userProfile);
+          }
         } catch (err) {
-          console.warn(
-            "[LifeDrop] Could not fetch user profile (check Firestore rules):",
-            err.message,
-          );
-          setProfile(null);
+          if (currentFetch === fetchIdRef.current) {
+            console.warn(
+              "[LifeDrop] Could not fetch user profile (check Firestore rules):",
+              err.message,
+            );
+            setProfile(null);
+          }
         }
       } else {
         setProfile(null);
@@ -35,6 +45,15 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  const refreshProfile = async () => {
+    const uid = userRef.current?.uid;
+    if (uid) {
+      fetchIdRef.current += 1;
+      const updated = await getUserProfile(uid);
+      setProfile(updated);
+    }
+  };
+
   const value = {
     user,
     profile,
@@ -42,12 +61,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: !!user,
     isDonor: profile?.role === "donor",
     isRequester: profile?.role === "requester",
-    refreshProfile: async () => {
-      if (user) {
-        const updated = await getUserProfile(user.uid);
-        setProfile(updated);
-      }
-    },
+    refreshProfile,
   };
 
   if (loading) {

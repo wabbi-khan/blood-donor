@@ -1,7 +1,7 @@
 // ────────────────────────────────────────────────────────────
 // LifeDrop — Donor Registration Page (Email/Password)
 // ────────────────────────────────────────────────────────────
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -44,17 +44,12 @@ const registrationSchema = z
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const { user, refreshProfile } = useAuth();
+  const { refreshProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [location, setLocation] = useState(null);
   const [locLoading, setLocLoading] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard", { replace: true });
-    }
-  }, [user, navigate]);
+  const isSubmitting = useRef(false);
 
   const {
     register,
