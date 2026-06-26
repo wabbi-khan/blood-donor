@@ -87,6 +87,9 @@ const SearchDonorsPage = () => {
         results.push({ id: doc.id, ...doc.data() });
       });
 
+      // Exclude current user from results
+      results = results.filter((donor) => donor.id !== user.uid);
+
       // Filter by city client-side to avoid index requirement errors on composite queries
       if (city) {
         results = results.filter(

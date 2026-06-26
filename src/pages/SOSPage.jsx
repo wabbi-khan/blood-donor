@@ -3,12 +3,13 @@
 // ────────────────────────────────────────────────────────────
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useAuth } from "../store/AuthContext";
+import SearchableCitySelect from "../components/common/SearchableCitySelect";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const URGENCY_LEVELS = [
@@ -55,6 +56,7 @@ const SOSPage = () => {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(sosSchema),
@@ -267,18 +269,19 @@ const SOSPage = () => {
 
             {/* City */}
             <div>
-              <label
-                htmlFor="sos-city"
-                className="block text-sm text-slate-300 mb-1 font-medium"
-              >
+              <label className="block text-sm text-slate-300 mb-1 font-medium">
                 City
               </label>
-              <input
-                id="sos-city"
-                type="text"
-                placeholder="Lahore"
-                {...register("city")}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
+              <Controller
+                name="city"
+                control={control}
+                render={({ field }) => (
+                  <SearchableCitySelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.city?.message}
+                  />
+                )}
               />
               {errors.city && (
                 <p className="text-red-400 text-xs mt-1">
