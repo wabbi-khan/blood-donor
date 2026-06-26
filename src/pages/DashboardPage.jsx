@@ -41,7 +41,6 @@ const StatCard = ({ icon, label, value, color = "text-red-400" }) => (
 const DashboardPage = () => {
   const { user, profile } = useAuth();
   const isDonor = profile?.role === "donor";
-  console.log("profile", profile);
 
   const [activeAlerts, setActiveAlerts] = useState([]);
   const [myRequests, setMyRequests] = useState([]);
@@ -85,25 +84,6 @@ const DashboardPage = () => {
     };
   }, [user, profile, isDonor]);
 
-  const handleRespond = async (requestId) => {
-    try {
-      const reqRef = doc(db, "sos_requests", requestId);
-      await updateDoc(reqRef, {
-        respondedDonors: arrayUnion({
-          uid: user.uid,
-          name: profile.name,
-          phone: profile.phone || "", // Reveal phone ONLY when responding
-          timestamp: new Date().toISOString(),
-        }),
-      });
-      alert(
-        "Response sent! The patient/hospital has received your contact details.",
-      );
-    } catch (err) {
-      alert("Failed to respond: " + err.message);
-    }
-  };
-
   if (!profile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -127,6 +107,25 @@ const DashboardPage = () => {
       </div>
     );
   }
+
+  const handleRespond = async (requestId) => {
+    try {
+      const reqRef = doc(db, "sos_requests", requestId);
+      await updateDoc(reqRef, {
+        respondedDonors: arrayUnion({
+          uid: user.uid,
+          name: profile.name,
+          phone: profile.phone || "", // Reveal phone ONLY when responding
+          timestamp: new Date().toISOString(),
+        }),
+      });
+      alert(
+        "Response sent! The patient/hospital has received your contact details.",
+      );
+    } catch (err) {
+      alert("Failed to respond: " + err.message);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
