@@ -53,6 +53,16 @@ service cloud.firestore {
       allow delete: if isOwner(donorId);
     }
 
+    // ── Donor Requests Collection ────────────────────────────
+    // Targeted requests from SearchDonorsPage.
+    match /donor_requests/{requestId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated()
+        && resource.data.requesterId == request.auth.uid;
+    }
+
     // ── Live Tracking Collection (Realtime DB handles most of this) ──
     // Firestore fallback for tracking confirmations
     match /tracking/{trackId} {

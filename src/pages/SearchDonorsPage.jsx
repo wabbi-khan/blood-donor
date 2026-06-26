@@ -1,12 +1,27 @@
 import { useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { distanceBetween } from "geofire-common";
 import { db } from "../services/firebase";
+import { useAuth } from "../store/AuthContext";
 import SearchableCitySelect from "../components/common/SearchableCitySelect";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
+const URGENCY_LEVELS = [
+  { value: "critical", label: "🔴 Critical", color: "border-red-500 bg-red-900/20" },
+  { value: "urgent", label: "🟠 Urgent", color: "border-orange-500 bg-orange-900/20" },
+  { value: "normal", label: "🟢 Normal", color: "border-green-500 bg-green-900/20" },
+];
+
 const SearchDonorsPage = () => {
+  const { user, profile } = useAuth();
   const [bloodType, setBloodType] = useState("");
   const [city, setCity] = useState("");
   const [donors, setDonors] = useState([]);
@@ -15,6 +30,16 @@ const SearchDonorsPage = () => {
   const [error, setError] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const [locLoading, setLocLoading] = useState(false);
+  const [requestTarget, setRequestTarget] = useState(null);
+  const [requestForm, setRequestForm] = useState({
+    patientName: "",
+    hospital: "",
+    contactPhone: "",
+    urgency: "urgent",
+    unitsNeeded: 1,
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [requestSuccess, setRequestSuccess] = useState(false);
 
   const detectLocation = () => {
     setLocLoading(true);
@@ -96,6 +121,59 @@ const SearchDonorsPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRequest = async () => {
+    if (!requestTarget || !user) return;
+    setSubmitting(true);
+    setError("");
+    try {
+      await addDoc(collection(db, "donor_requests"), {
+        patientName: requestForm.patientName,
+        bloodType: requestTarget.bloodType,
+        unitsNeeded: requestForm.unitsNeeded,
+        hospital: requestForm.hospital,
+        city: requestTarget.city,
+        urgency: requestForm.urgency,
+        contactPhone: requestForm.contactPhone,
+        requesterId: user.uid,
+        requesterName: profile?.name || "Anonymous",
+        targetDonorId: requestTarget.id,
+        targetDonorName: requestTarget.name,
+        status: "open",
+        respondedDonors: [],
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      setRequestSuccess(true);
+      setTimeout(() => {
+        setRequestTarget(null);
+        setRequestSuccess(false);
+        setRequestForm({
+          patientName: "",
+          hospital: "",
+          contactPhone: "",
+          urgency: "urgent",
+          unitsNeeded: 1,
+        });
+      }, 2000);
+    } catch (err) {
+      setError("Failed to send request: " + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const openRequestModal = (donor) => {
+    setRequestTarget(donor);
+    setRequestSuccess(false);
+    setRequestForm({
+      patientName: "",
+      hospital: "",
+      contactPhone: "",
+      urgency: "urgent",
+      unitsNeeded: 1,
+    });
   };
 
   return (
@@ -262,12 +340,20 @@ const SearchDonorsPage = () => {
                       </div>
 
                       {isAvail ? (
-                        <a
-                          href={`tel:${donor.phone}`}
-                          className="w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 bg-green-600/20 text-green-400 border border-green-600/50 hover:bg-green-600 hover:text-white transition-colors"
-                        >
-                          📞 Call Donor ({donor.phone})
-                        </a>
+                        <div className="flex flex-col gap-2">
+                          <button
+                            onClick={() => openRequestModal(donor)}
+                            className="w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 bg-red-600/20 text-red-400 border border-red-600/50 hover:bg-red-600 hover:text-white transition-colors"
+                          >
+                            🩸 Request Donor
+                          </button>
+                          <a
+                            href={`tel:${donor.phone}`}
+                            className="w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 bg-green-600/20 text-green-400 border border-green-600/50 hover:bg-green-600 hover:text-white transition-colors"
+                          >
+                            📞 Call Donor ({donor.phone})
+                          </a>
+                        </div>
                       ) : (
                         <button
                           disabled
@@ -284,6 +370,163 @@ const SearchDonorsPage = () => {
           </div>
         )}
       </div>
+
+      {/* Request Modal */}
+      {requestTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/70 backdrop-blur-sm">
+          <div className="glass-dark p-6 sm:p-8 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            {requestSuccess ? (
+              <div className="text-center py-8">
+                <div className="text-5xl mb-4">✅</div>
+                <h3 className="font-outfit font-bold text-xl text-white mb-2">
+                  Request Sent!
+                </h3>
+                <p className="text-slate-400 text-sm">
+                  Your request has been sent to {requestTarget.name}.
+                  They will see it on their dashboard.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-outfit font-bold text-lg text-white">
+                    Request {requestTarget.name}
+                  </h3>
+                  <button
+                    onClick={() => setRequestTarget(null)}
+                    className="text-slate-400 hover:text-white text-xl leading-none"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="bg-white/5 rounded-xl p-3 mb-6 text-sm">
+                  <span className="text-slate-400">Donor:</span>{" "}
+                  <span className="text-white font-medium">
+                    {requestTarget.name}
+                  </span>{" "}
+                  —{" "}
+                  <span className="text-red-400 font-bold">
+                    {requestTarget.bloodType}
+                  </span>
+                  , {requestTarget.city}
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-slate-300 mb-1 font-medium">
+                      Patient Name *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Full name"
+                      value={requestForm.patientName}
+                      onChange={(e) =>
+                        setRequestForm({
+                          ...requestForm,
+                          patientName: e.target.value,
+                        })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-slate-300 mb-1 font-medium">
+                      Hospital *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Hospital name"
+                      value={requestForm.hospital}
+                      onChange={(e) =>
+                        setRequestForm({
+                          ...requestForm,
+                          hospital: e.target.value,
+                        })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-slate-300 mb-1 font-medium">
+                      Contact Phone *
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="03001234567"
+                      value={requestForm.contactPhone}
+                      onChange={(e) =>
+                        setRequestForm({
+                          ...requestForm,
+                          contactPhone: e.target.value,
+                        })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm text-slate-300 mb-1 font-medium">
+                        Urgency
+                      </label>
+                      <select
+                        value={requestForm.urgency}
+                        onChange={(e) =>
+                          setRequestForm({
+                            ...requestForm,
+                            urgency: e.target.value,
+                          })
+                        }
+                        className="w-full bg-[#0f3460] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all"
+                      >
+                        {URGENCY_LEVELS.map((u) => (
+                          <option key={u.value} value={u.value}>
+                            {u.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-slate-300 mb-1 font-medium">
+                        Units Needed
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="10"
+                        value={requestForm.unitsNeeded}
+                        onChange={(e) =>
+                          setRequestForm({
+                            ...requestForm,
+                            unitsNeeded: Number(e.target.value),
+                          })
+                        }
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleRequest}
+                    disabled={
+                      submitting ||
+                      !requestForm.patientName ||
+                      !requestForm.hospital ||
+                      !requestForm.contactPhone
+                    }
+                    className="btn-LifeDrop w-full py-3 rounded-xl font-bold mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {submitting ? "Sending..." : "🩸 Send Request"}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

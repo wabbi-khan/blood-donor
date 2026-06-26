@@ -47,6 +47,10 @@ const DashboardPage = () => {
   const [activeAlerts, setActiveAlerts] = useState([]);
   const [myRequests, setMyRequests] = useState([]);
   const [loadingFeeds, setLoadingFeeds] = useState(true);
+  const [donorRequests, setDonorRequests] = useState([]);
+  const [loadingDonorRequests, setLoadingDonorRequests] = useState(true);
+  const [myDonorRequests, setMyDonorRequests] = useState([]);
+  const [loadingMyDonorRequests, setLoadingMyDonorRequests] = useState(true);
 
   useEffect(() => {
     if (!user || !profile) return;
@@ -86,6 +90,45 @@ const DashboardPage = () => {
     };
   }, [user, profile, isDonor]);
 
+  // 3. Fetch targeted donor requests (for donors only)
+  useEffect(() => {
+    if (!isDonor || !user) {
+      setLoadingDonorRequests(false);
+      return;
+    }
+
+    const qDonorReqs = query(
+      collection(db, "donor_requests"),
+      where("targetDonorId", "==", user.uid),
+      where("status", "==", "open"),
+    );
+    const unsubDonorReqs = onSnapshot(qDonorReqs, (snapshot) => {
+      setDonorRequests(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+      setLoadingDonorRequests(false);
+    });
+
+    return () => unsubDonorReqs();
+  }, [user, isDonor]);
+
+  // 4. Fetch my own donor requests (for requester view)
+  useEffect(() => {
+    if (!user) {
+      setLoadingMyDonorRequests(false);
+      return;
+    }
+
+    const qMyDonorReqs = query(
+      collection(db, "donor_requests"),
+      where("requesterId", "==", user.uid),
+    );
+    const unsubMyDonorReqs = onSnapshot(qMyDonorReqs, (snapshot) => {
+      setMyDonorRequests(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+      setLoadingMyDonorRequests(false);
+    });
+
+    return () => unsubMyDonorReqs();
+  }, [user]);
+
   if (!profile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -124,6 +167,23 @@ const DashboardPage = () => {
       alert(
         "Response sent! The patient/hospital has received your contact details.",
       );
+    } catch (err) {
+      alert("Failed to respond: " + err.message);
+    }
+  };
+
+  const handleDonorRespond = async (requestId) => {
+    try {
+      const reqRef = doc(db, "donor_requests", requestId);
+      await updateDoc(reqRef, {
+        respondedDonors: arrayUnion({
+          uid: user.uid,
+          name: profile.name,
+          phone: profile.phone || "",
+          timestamp: new Date().toISOString(),
+        }),
+      });
+      alert("Response sent! The requester has received your contact details.");
     } catch (err) {
       alert("Failed to respond: " + err.message);
     }
@@ -243,6 +303,74 @@ const DashboardPage = () => {
             </div>
           )}
 
+          {/* Targeted Donor Requests */}
+          {isDonor && (
+            <div className="glass p-6">
+              <h3 className="font-outfit font-bold text-xl text-white mb-4 flex items-center gap-2">
+                <span>🎯</span> Direct Requests For You
+              </h3>
+
+              {loadingDonorRequests ? (
+                <p className="text-slate-400 text-sm">Loading requests...</p>
+              ) : donorRequests.length === 0 ? (
+                <div className="text-center py-8 border border-dashed border-white/10 rounded-xl">
+                  <div className="text-4xl mb-2">📭</div>
+                  <p className="text-slate-400 text-sm">
+                    No direct requests yet.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {donorRequests.map((req) => {
+                    const hasResponded = req.respondedDonors?.some(
+                      (d) => d.uid === user.uid,
+                    );
+                    return (
+                      <div
+                        key={req.id}
+                        className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="bg-purple-500 text-white text-xs px-2 py-0.5 rounded font-bold">
+                              {req.bloodType}
+                            </span>
+                            <span className="text-white font-semibold">
+                              {req.patientName}
+                            </span>
+                          </div>
+                          <p className="text-slate-300 text-sm mb-1">
+                            Requested by{" "}
+                            <span className="text-purple-300 font-medium">
+                              {req.requesterName || "Anonymous"}
+                            </span>{" "}
+                            — {req.hospital}
+                          </p>
+                          <p className="text-slate-500 text-xs">
+                            {req.city} • {req.unitsNeeded} unit
+                            {req.unitsNeeded > 1 ? "s" : ""} needed •{" "}
+                            {req.urgency}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => handleDonorRespond(req.id)}
+                          disabled={hasResponded}
+                          className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all whitespace-nowrap ${
+                            hasResponded
+                              ? "bg-white/10 text-slate-400 cursor-not-allowed"
+                              : "bg-purple-500 hover:bg-purple-600 text-white shadow-lg shadow-purple-500/20"
+                          }`}
+                        >
+                          {hasResponded ? "✓ Responded" : "I Can Donate"}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* My SOS Requests */}
           <div className="glass p-6">
             <h3 className="font-outfit font-bold text-xl text-white mb-4 flex items-center gap-2">
@@ -309,8 +437,96 @@ const DashboardPage = () => {
               </div>
             )}
           </div>
-        </div>
+          {/* My Donor Requests (Requester View) */}
+          <div className="glass p-6">
+            <h3 className="font-outfit font-bold text-xl text-white mb-4 flex items-center gap-2">
+              <span>🎯</span> Your Donor Requests
+            </h3>
 
+            {loadingMyDonorRequests ? (
+              <p className="text-slate-400 text-sm">Loading requests...</p>
+            ) : myDonorRequests.length === 0 ? (
+              <div className="text-center py-8 border border-dashed border-white/10 rounded-xl">
+                <div className="text-4xl mb-2">📭</div>
+                <p className="text-slate-400 text-sm">
+                  You haven't requested any donors yet.
+                </p>
+                <Link
+                  to="/search-donors"
+                  className="text-red-400 hover:text-red-300 text-sm mt-2 inline-block transition-colors"
+                >
+                  Find Donors →
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {myDonorRequests.map((req) => (
+                  <div
+                    key={req.id}
+                    className="bg-white/5 border border-white/10 rounded-xl p-5"
+                  >
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-white font-semibold">
+                        {req.patientName} ({req.bloodType})
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-purple-400">
+                          → {req.targetDonorName}
+                        </span>
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            req.respondedDonors?.length > 0
+                              ? "bg-green-900/50 text-green-400 border border-green-700"
+                              : "bg-yellow-900/50 text-yellow-400 border border-yellow-700"
+                          }`}
+                        >
+                          {req.respondedDonors?.length > 0
+                            ? "✓ Accepted"
+                            : "Pending"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-slate-400 text-xs mb-3">
+                      {req.hospital} • {req.city} • {req.unitsNeeded} unit
+                      {req.unitsNeeded > 1 ? "s" : ""} needed
+                    </p>
+
+                    <div className="border-t border-white/10 pt-3">
+                      <p className="text-sm font-medium text-slate-300 mb-2">
+                        Responses ({req.respondedDonors?.length || 0})
+                      </p>
+                      {req.respondedDonors?.length > 0 ? (
+                        <div className="space-y-2">
+                          {req.respondedDonors.map((donor, idx) => (
+                            <div
+                              key={idx}
+                              className="flex justify-between items-center bg-black/20 p-2 rounded text-sm"
+                            >
+                              <span className="text-slate-300">
+                                {donor.name}
+                              </span>
+                              <a
+                                href={`tel:${donor.phone}`}
+                                className="text-green-400 hover:underline"
+                              >
+                                {donor.phone}
+                              </a>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-slate-500 text-xs">
+                          Waiting for the donor to respond...
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
         {/* Right Column: Actions & Details */}
         <div className="space-y-6">
           {/* Quick Actions */}

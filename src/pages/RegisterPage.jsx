@@ -106,7 +106,7 @@ const RegisterPage = () => {
         donationCount: data.lastDonationDate ? 1 : 0,
       });
       await refreshProfile();
-      navigate("/verify-email");
+      navigate("/dashboard");
     } catch (err) {
       const code = err.code || "";
       if (code === "auth/email-already-in-use") {
