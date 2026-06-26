@@ -196,7 +196,7 @@ const DashboardPage = () => {
         <div className="flex items-center gap-3 mb-2">
           <span className="text-4xl">👋</span>
           <div>
-            <h1 className="font-outfit font-extrabold text-3xl text-white">
+            <h1 className="font-outfit font-extrabold text-3xl text-white capitalize">
               Hello, {profile?.name || "there"}!
             </h1>
             <p className="text-slate-400 text-sm">
@@ -278,7 +278,10 @@ const DashboardPage = () => {
                             </span>
                           </div>
                           <p className="text-slate-300 text-sm mb-1">
-                            {alert.patientName} needs {alert.unitsNeeded} units
+                            <span className="capitalize">
+                              {alert.patientName}
+                            </span>{" "}
+                            needs {alert.unitsNeeded} units
                           </p>
                           <p className="text-slate-500 text-xs">
                             {alert.city} • Contact: {alert.contactPhone}
@@ -335,13 +338,13 @@ const DashboardPage = () => {
                             <span className="bg-purple-500 text-white text-xs px-2 py-0.5 rounded font-bold">
                               {req.bloodType}
                             </span>
-                            <span className="text-white font-semibold">
+                            <span className="text-white font-semibold capitalize">
                               {req.patientName}
                             </span>
                           </div>
                           <p className="text-slate-300 text-sm mb-1">
                             Requested by{" "}
-                            <span className="text-purple-300 font-medium">
+                            <span className="text-purple-300 font-medium capitalize">
                               {req.requesterName || "Anonymous"}
                             </span>{" "}
                             — {req.hospital}
@@ -370,7 +373,6 @@ const DashboardPage = () => {
               )}
             </div>
           )}
-
           {/* My SOS Requests */}
           <div className="glass p-6">
             <h3 className="font-outfit font-bold text-xl text-white mb-4 flex items-center gap-2">
@@ -393,7 +395,7 @@ const DashboardPage = () => {
                     className="bg-white/5 border border-white/10 rounded-xl p-5"
                   >
                     <div className="flex justify-between items-center mb-3">
-                      <span className="text-white font-semibold">
+                      <span className="text-white font-semibold capitalize">
                         For: {req.patientName} ({req.bloodType})
                       </span>
                       <span
@@ -414,7 +416,7 @@ const DashboardPage = () => {
                               key={idx}
                               className="flex justify-between items-center bg-black/20 p-2 rounded text-sm"
                             >
-                              <span className="text-slate-300">
+                              <span className="text-slate-300 capitalize">
                                 {donor.name}
                               </span>
                               <a
