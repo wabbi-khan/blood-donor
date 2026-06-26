@@ -151,7 +151,7 @@ const SOSPage = () => {
         <div className="glass-dark p-8 sm:p-10">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="text-5xl animate-pulse-red mb-4">🆘</div>
+            <div className="text-5xl animate-pulse mb-4">🆘</div>
             <h1 className="font-outfit font-extrabold text-2xl text-white mb-2">
               Post Emergency SOS
             </h1>

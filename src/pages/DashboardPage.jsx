@@ -41,6 +41,7 @@ const StatCard = ({ icon, label, value, color = "text-red-400" }) => (
 const DashboardPage = () => {
   const { user, profile } = useAuth();
   const isDonor = profile?.role === "donor";
+  console.log("profile", profile);
 
   const [activeAlerts, setActiveAlerts] = useState([]);
   const [myRequests, setMyRequests] = useState([]);
@@ -181,9 +182,9 @@ const DashboardPage = () => {
           {/* Active Emergencies (For Donors) */}
           {isDonor && (
             <div className="glass p-6">
-              <h3 className="font-outfit font-bold text-xl text-white mb-4 flex items-center gap-2">
-                <span className="animate-pulse-red text-red-500">🚨</span>{" "}
-                Active Emergencies Near You
+              <h3 className="font-outfit font-bold text-xl text-white mb-4 flex items-center gap-2 animate-pulse">
+                <span className="text-red-500">🚨</span> Active Emergencies Near
+                You
               </h3>
 
               {loadingFeeds ? (
