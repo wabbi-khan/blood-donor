@@ -3,11 +3,12 @@
 // ────────────────────────────────────────────────────────────
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUp, createOrUpdateUserProfile } from "../services/authService";
 import { useAuth } from "../store/AuthContext";
+import SearchableCitySelect from "../components/common/SearchableCitySelect";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -55,6 +56,7 @@ const RegisterPage = () => {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm({ resolver: zodResolver(registrationSchema) });
 
@@ -104,7 +106,7 @@ const RegisterPage = () => {
         donationCount: data.lastDonationDate ? 1 : 0,
       });
       await refreshProfile();
-      navigate("/dashboard");
+      navigate("/verify-email");
     } catch (err) {
       const code = err.code || "";
       if (code === "auth/email-already-in-use") {
@@ -302,18 +304,19 @@ const RegisterPage = () => {
             {/* City, Age, Weight */}
             <div className="grid grid-cols-3 gap-3">
               <div className="col-span-3 sm:col-span-1">
-                <label
-                  htmlFor="reg-city"
-                  className="block text-sm text-slate-300 mb-1 font-medium"
-                >
+                <label className="block text-sm text-slate-300 mb-1 font-medium">
                   City
                 </label>
-                <input
-                  id="reg-city"
-                  type="text"
-                  placeholder="Lahore"
-                  {...register("city")}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all text-sm"
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <SearchableCitySelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={errors.city?.message}
+                    />
+                  )}
                 />
                 {errors.city && (
                   <p className="text-red-400 text-xs mt-1">

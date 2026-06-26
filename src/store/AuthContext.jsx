@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">🩸</div>
+          <div className="animate-heartbeat text-6xl mb-4">🫀</div>
           <div className="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-slate-400 text-sm">Loading...</p>
         </div>

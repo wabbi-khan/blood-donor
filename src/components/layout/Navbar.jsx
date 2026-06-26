@@ -6,12 +6,12 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../store/AuthContext";
 import { logOut } from "../../services/authService";
 
-const BloodDropIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 text-red-500">
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8l7 4-7 4z" />
-    <path d="M12 2.1C9.17 2.1 6.6 3.64 5.17 6L12 22l6.83-16C17.4 3.64 14.83 2.1 12 2.1z" />
-  </svg>
-);
+// const BloodDropIcon = () => (
+//   <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 text-red-500">
+//     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8l7 4-7 4z" />
+//     <path d="M12 2.1C9.17 2.1 6.6 3.64 5.17 6L12 22l6.83-16C17.4 3.64 14.83 2.1 12 2.1z" />
+//   </svg>
+// );
 
 const Navbar = () => {
   const { isAuthenticated, profile, user } = useAuth();
@@ -36,9 +36,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="animate-heartbeat">
-              <BloodDropIcon />
-            </div>
+            <div className="animate-heartbeat text-3xl">🫀</div>
             <span className="text-xl font-extrabold font-outfit tracking-wider text-white group-hover:text-red-400 transition-colors">
               LifeDrop
             </span>

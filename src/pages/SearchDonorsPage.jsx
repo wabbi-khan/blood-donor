@@ -2,6 +2,7 @@ import { useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { distanceBetween } from "geofire-common";
 import { db } from "../services/firebase";
+import SearchableCitySelect from "../components/common/SearchableCitySelect";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -140,20 +141,17 @@ const SearchDonorsPage = () => {
                 ))}
               </select>
             </div>
-            <div className="flex-1 w-full">
+            <div className="">
               <label className="block text-sm text-slate-300 mb-1 font-medium">
                 City
               </label>
               <div className="flex flex-col sm:flex-row gap-2">
-                <input
-                  type="text"
-                  placeholder="e.g. Lahore"
+                <SearchableCitySelect
                   value={city}
-                  onChange={(e) => {
-                    setCity(e.target.value);
+                  onChange={(val) => {
+                    setCity(val);
                     setUserLocation(null);
                   }}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
                   disabled={!!userLocation}
                 />
                 <button

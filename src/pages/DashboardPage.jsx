@@ -30,7 +30,9 @@ const StatCard = ({ icon, label, value, color = "text-red-400" }) => (
   <div className="glass p-6 flex items-center gap-4 hover:border-red-900/40 transition-all duration-300 hover:-translate-y-0.5">
     <div className="text-3xl">{icon}</div>
     <div>
-      <div className={`text-2xl font-outfit font-extrabold ${color}`}>
+      <div
+        className={`text-2xl font-outfit font-extrabold ${color} capitalize`}
+      >
         {value}
       </div>
       <div className="text-slate-400 text-xs">{label}</div>

@@ -190,7 +190,7 @@ const HomePage = () => {
       </section>
 
       {/* ── PRIVACY BANNER ───────────────────────────── */}
-      <section className="py-16 px-4">
+      {/* <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="glass-dark p-10 text-center relative overflow-hidden">
             <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-red-900/20 blur-2xl pointer-events-none" />
@@ -209,7 +209,7 @@ const HomePage = () => {
             </p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ── FINAL CTA ───────────────────────────────── */}
       <section className="py-24 px-4 text-center">
@@ -223,7 +223,7 @@ const HomePage = () => {
           id="footer-cta-btn"
           className="btn-LifeDrop px-10 py-4 rounded-xl text-lg font-bold inline-flex items-center gap-2 animate-pulse-red"
         >
-          <span>🩸</span> Become a Donor Today
+          <span>🫀</span> Become a Donor Today
         </Link>
       </section>
     </div>
