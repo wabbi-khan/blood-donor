@@ -24,9 +24,27 @@ export const AuthProvider = ({ children }) => {
       if (firebaseUser) {
         try {
           const userProfile = await getUserProfile(firebaseUser.uid);
-          if (currentFetch === fetchIdRef.current) {
-            setProfile(userProfile);
+          
+          // Request FCM Token and update profile if needed
+          try {
+            const { requestFCMToken } = await import('../services/firebase');
+            const token = await requestFCMToken();
+            if (token && (!userProfile || userProfile.fcmToken !== token)) {
+              const { createOrUpdateUserProfile } = await import('../services/authService');
+              await createOrUpdateUserProfile(firebaseUser, { ...userProfile, fcmToken: token });
+              // Fetch profile again after update
+              if (currentFetch === fetchIdRef.current) {
+                const updatedProfile = await getUserProfile(firebaseUser.uid);
+                setProfile(updatedProfile);
+              }
+            } else if (currentFetch === fetchIdRef.current) {
+              setProfile(userProfile);
+            }
+          } catch (tokenErr) {
+            console.error("FCM Token error:", tokenErr);
+            if (currentFetch === fetchIdRef.current) setProfile(userProfile);
           }
+
         } catch (err) {
           if (currentFetch === fetchIdRef.current) {
             console.warn(

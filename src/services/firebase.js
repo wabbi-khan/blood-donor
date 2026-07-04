@@ -8,14 +8,14 @@ import { getDatabase } from 'firebase/database';
 import { getMessaging, isSupported } from 'firebase/messaging';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDI7BSmsQEKs0W2uRXiCX6yBspPFkiahdQ",
-  authDomain: "blood-donor-30e89.firebaseapp.com",
-  databaseURL: "https://blood-donor-30e89-default-rtdb.firebaseio.com",
-  projectId: "blood-donor-30e89",
-  storageBucket: "blood-donor-30e89.firebasestorage.app",
-  messagingSenderId: "905497104922",
-  appId: "1:905497104922:web:cb0ce26083e614ac89f7a3",
-  measurementId: "G-J0TR6VB5GD"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
@@ -35,6 +35,25 @@ export const getMessagingInstance = async () => {
   const supported = await isSupported();
   if (supported) {
     return getMessaging(app);
+  }
+  return null;
+};
+
+export const requestFCMToken = async () => {
+  try {
+    const messaging = await getMessagingInstance();
+    if (!messaging) return null;
+    
+    // The browser will ask the user for permission if not already granted.
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      const { getToken } = await import('firebase/messaging');
+      // Replace with your VAPID key if you have generated one in Firebase Console > Project Settings > Cloud Messaging
+      const currentToken = await getToken(messaging);
+      return currentToken;
+    }
+  } catch (error) {
+    console.warn("An error occurred while retrieving token. ", error);
   }
   return null;
 };

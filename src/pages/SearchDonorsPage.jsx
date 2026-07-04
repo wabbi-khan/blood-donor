@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import {
   collection,
   query,
@@ -15,9 +16,21 @@ import SearchableCitySelect from "../components/common/SearchableCitySelect";
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const URGENCY_LEVELS = [
-  { value: "critical", label: "🔴 Critical", color: "border-red-500 bg-red-900/20" },
-  { value: "urgent", label: "🟠 Urgent", color: "border-orange-500 bg-orange-900/20" },
-  { value: "normal", label: "🟢 Normal", color: "border-green-500 bg-green-900/20" },
+  {
+    value: "critical",
+    label: "🔴 Critical",
+    color: "border-red-500 bg-red-900/20",
+  },
+  {
+    value: "urgent",
+    label: "🟠 Urgent",
+    color: "border-orange-500 bg-orange-900/20",
+  },
+  {
+    value: "normal",
+    label: "🟢 Normal",
+    color: "border-green-500 bg-green-900/20",
+  },
 ];
 
 const SearchDonorsPage = () => {
@@ -148,6 +161,67 @@ const SearchDonorsPage = () => {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
+
+      // 1. Send Free Email via EmailJS
+      const emailjsPublicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+      const emailjsServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const emailjsTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+
+      if (requestTarget.email && emailjsPublicKey && emailjsServiceId && emailjsTemplateId) {
+        try {
+          await axios.post(
+            "https://api.emailjs.com/api/v1.0/email/send",
+            {
+              service_id: emailjsServiceId,
+              template_id: emailjsTemplateId,
+              user_id: emailjsPublicKey,
+              template_params: {
+                to_email: requestTarget.email,
+                to_name: requestTarget.name,
+                blood_type: requestTarget.bloodType,
+                patient_name: requestForm.patientName,
+                hospital: requestForm.hospital,
+                contact_phone: requestForm.contactPhone,
+                city: requestTarget.city,
+              },
+            },
+            {
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+          console.log("Email sent successfully via EmailJS.");
+        } catch (emailErr) {
+          console.error("Failed to send email via EmailJS:", emailErr?.response?.data || emailErr.message);
+        }
+      }
+
+      // 2. Send Free Push Notification via FCM REST API
+      if (requestTarget.fcmToken && import.meta.env.VITE_FCM_SERVER_KEY) {
+        try {
+          await fetch("https://fcm.googleapis.com/fcm/send", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `key=${import.meta.env.VITE_FCM_SERVER_KEY}`,
+            },
+            body: JSON.stringify({
+              to: requestTarget.fcmToken,
+              notification: {
+                title: `Urgent: ${requestTarget.bloodType} Blood Needed!`,
+                body: `${requestForm.patientName} needs blood at ${requestForm.hospital}.`,
+                icon: "/vite.svg",
+              },
+              data: {
+                click_action: "FLUTTER_NOTIFICATION_CLICK",
+                url: "/dashboard",
+              },
+            }),
+          });
+        } catch (pushErr) {
+          console.error("Failed to send push notification:", pushErr);
+        }
+      }
+
       setRequestSuccess(true);
       setTimeout(() => {
         setRequestTarget(null);
@@ -356,6 +430,18 @@ const SearchDonorsPage = () => {
                           >
                             📞 Call Donor ({donor.phone})
                           </a>
+                          {/* <div>
+                            <button
+                              onClick={() => openRequestModal(donor)}
+                              className="w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 bg-red-600/20 text-red-400 border border-red-600/50 hover:bg-red-600 hover:text-white transition-colors"
+                            >
+                              🩸 Request Donor
+                            </button>
+                            <p className="text-[10px] text-slate-600 text-center mt-1.5 leading-tight">
+                              Phone is hidden. It will be revealed to the
+                              requester only after the donor responds.
+                            </p>
+                          </div> */}
                         </div>
                       ) : (
                         <button
@@ -385,8 +471,8 @@ const SearchDonorsPage = () => {
                   Request Sent!
                 </h3>
                 <p className="text-slate-400 text-sm">
-                  Your request has been sent to {requestTarget.name}.
-                  They will see it on their dashboard.
+                  Your request has been sent to {requestTarget.name}. They will
+                  see it on their dashboard.
                 </p>
               </div>
             ) : (

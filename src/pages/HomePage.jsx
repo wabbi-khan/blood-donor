@@ -18,31 +18,49 @@ const HOW_IT_WORKS = [
     step: "01",
     icon: "📋",
     title: "Donor Registers",
-    desc: "Sign up with your blood type, phone, and GPS location. Your number stays private.",
+    badge: "Profile & GPS",
+    desc: "Sign up with your blood type, city, and GPS location.",
+    highlights: ["Blood type & city", "GPS location", "Privacy protected"],
   },
   {
     step: "02",
     icon: "🆘",
-    title: "SOS Alert Sent",
-    desc: "A requester posts an emergency with blood type and hospital location.",
+    title: "SOS Emergency Alert",
+    badge: "Instant Request",
+    desc: "Post an emergency with patient name, blood type, hospital, and GPS location. Your request reaches matching donors within 50 KM instantly.",
+    highlights: ["Patient details", "Urgency level", "Hospital GPS"],
   },
   {
     step: "03",
     icon: "📍",
-    title: "Smart Matching",
-    desc: "Our system finds compatible donors within 10–50 KM radius using geo-matching.",
+    title: "Geo & Blood Matching",
+    badge: "50 KM Radius",
+    desc: "Donors see only emergencies matching their blood type within 50 KM of their GPS location sorted by distance, closest first.",
+    highlights: ["Blood type match", "50 km radius", "Sorted by distance"],
   },
   {
     step: "04",
     icon: "🔔",
-    title: "Push Notification",
-    desc: "Matched donors receive an instant browser push notification.",
+    title: "Real-Time Dashboard",
+    badge: "Live Updates",
+    desc: "Geo sorted emergencies and donor requests update live on your dashboard. No refresh needed see nearby alerts instantly.",
+    highlights: ["Geo-sorted feed", "Direct requests", "Response tracking"],
   },
   {
     step: "05",
+    icon: "🎯",
+    title: "Targeted Donor Request",
+    badge: "Direct Ask",
+    desc: "Find a specific donor on the search page and send a direct request. They'll see it in their dashboard immediately.",
+    highlights: ["Search donors", "One-click request", "Direct notification"],
+  },
+  {
+    step: "06",
     icon: "✅",
-    title: "Donor Confirms",
-    desc: 'When the donor clicks "I am On My Way", only then is their phone revealed.',
+    title: "Donor Responds",
+    badge: "Privacy Protected",
+    desc: "When you click 'I Can Donate', send notification to requester.",
+    highlights: ["Phone revealed", "One-time share", "Full control"],
   },
 ];
 
@@ -156,33 +174,70 @@ const HomePage = () => {
       </section>
 
       {/* ── HOW IT WORKS ─────────────────────────────── */}
-      <section className="py-24 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-24 px-4 relative">
+        {/* Background Glow */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/2 right-0 w-[400px] h-[400px] rounded-full bg-red-900/10 blur-3xl" />
+          <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] rounded-full bg-blue-900/10 blur-3xl" />
+        </div>
+
+        <div className="max-w-6xl mx-auto relative">
           <div className="text-center mb-16">
-            <h2 className="section-title mb-4">How LifeDrop Works</h2>
+            <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm text-red-400 font-medium mb-6">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              Simple 6-Step Process
+            </div>
+            <h2 className="section-title mb-4">
+              How <span className="text-white">LifeDrop</span> Works
+            </h2>
             <p className="text-slate-400 max-w-xl mx-auto">
-              A simple, privacy-first flow that saves lives in minutes
+              A privacy-first platform that connects blood requesters with
+              nearby donors — in real time.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {HOW_IT_WORKS.map((step, i) => (
               <div
                 key={i}
-                className="glass p-6 text-center relative group hover:border-red-900/40 transition-all duration-300 hover:-translate-y-1"
+                className="glass p-6 relative group hover:border-red-900/40 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
               >
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-200">
-                  {step.icon}
+                {/* Step Number Decorator */}
+                <div className="absolute top-3 right-3 text-5xl font-outfit font-black text-white/5 select-none pointer-events-none leading-none">
+                  {step.step}
                 </div>
-                <div className="text-red-500 text-xs font-bold font-mono mb-2">
-                  Step {step.step}
+
+                <div className="flex items-start gap-4">
+                  <div className="text-3xl mt-1 group-hover:scale-110 transition-transform duration-200">
+                    {step.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-red-500 text-xs font-bold font-mono">
+                        Step {step.step}
+                      </span>
+                      <span className="text-[10px] uppercase tracking-wider bg-red-900/30 text-red-400 px-2 py-0.5 rounded-full border border-red-900/40">
+                        {step.badge}
+                      </span>
+                    </div>
+                    <h3 className="text-white font-semibold text-sm mb-1">
+                      {step.title}
+                    </h3>
+                    <p className="text-slate-400 text-xs leading-relaxed mb-3">
+                      {step.desc}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {step.highlights.map((h, j) => (
+                        <span
+                          key={j}
+                          className="text-[10px] bg-white/5 text-slate-500 px-2 py-0.5 rounded-full border border-white/5"
+                        >
+                          {h}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-white font-semibold text-sm mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-slate-400 text-xs leading-relaxed">
-                  {step.desc}
-                </p>
               </div>
             ))}
           </div>

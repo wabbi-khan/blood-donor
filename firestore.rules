@@ -69,5 +69,18 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow create, update: if isAuthenticated();
     }
+
+    // ── Notifications (Emails & Push) ────────────────────────
+    match /mail/{mailId} {
+      allow create: if isAuthenticated();
+      // Only the Firebase Extension backend needs to read these
+      allow read: if false;
+    }
+
+    match /messages/{messageId} {
+      allow create: if isAuthenticated();
+      // Only the Firebase Extension backend needs to read these
+      allow read: if false;
+    }
   }
 }
