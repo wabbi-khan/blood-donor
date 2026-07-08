@@ -8,6 +8,7 @@ import {
   onAuthStateChanged,
   updateProfile,
   sendPasswordResetEmail,
+  fetchSignInMethodsForEmail,
   GoogleAuthProvider,
   signInWithPopup,
   updatePassword,
@@ -34,17 +35,21 @@ export const signUp = async (username, password, displayName) => {
 // ── Username Helpers ────────────────────────────────────────
 export const isUsernameTaken = async (username) => {
   if (!username) return false;
-  const q = query(collection(db, 'users'), where('username', '==', username.toLowerCase()));
-  const snap = await getDocs(q);
-  return !snap.empty;
+  const methods = await fetchSignInMethodsForEmail(auth, usernameToEmail(username));
+  return methods.length > 0;
 };
 
 export const getEmailByUsername = async (username) => {
   if (!username) return null;
-  const q = query(collection(db, 'users'), where('username', '==', username.toLowerCase()));
-  const snap = await getDocs(q);
-  if (snap.empty) return null;
-  return snap.docs[0].data().email;
+  try {
+    const q = query(collection(db, 'users'), where('username', '==', username.toLowerCase()));
+    const snap = await getDocs(q);
+    if (snap.empty) return null;
+    return snap.docs[0].data().email;
+  } catch {
+    // Fallback to generated email if Firestore query fails (e.g. no auth)
+    return null;
+  }
 };
 
 // ── Sign In ────────────────────────────────────────────────

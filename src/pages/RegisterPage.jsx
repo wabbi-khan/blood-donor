@@ -257,7 +257,7 @@ const RegisterPage = () => {
               <input
                 id="reg-name"
                 type="text"
-                placeholder="Ali Hassan"
+                placeholder="your name"
                 {...register("name")}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
               />
@@ -283,7 +283,7 @@ const RegisterPage = () => {
                 <input
                   id="reg-username"
                   type="text"
-                  placeholder="yourname"
+                  placeholder="username"
                   autoComplete="username"
                   {...register("username")}
                   className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
@@ -303,9 +303,9 @@ const RegisterPage = () => {
                 className="block text-sm text-slate-300 mb-1 font-medium"
               >
                 Phone Number{" "}
-                <span className="text-slate-500">
+                {/* <span className="text-slate-500">
                   (private — only shared when you respond)
-                </span>
+                </span> */}
               </label>
               <input
                 id="reg-phone"

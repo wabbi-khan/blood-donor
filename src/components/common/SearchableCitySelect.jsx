@@ -88,7 +88,7 @@ const SearchableCitySelect = ({ value = "", onChange, error, disabled }) => {
   }, [highlightedIndex]);
 
   return (
-    <div className="relative" ref={wrapperRef}>
+    <div className={`relative ${open ? "z-[9999]" : "z-0"}`} ref={wrapperRef}>
       <input
         ref={inputRef}
         type="text"
@@ -107,7 +107,7 @@ const SearchableCitySelect = ({ value = "", onChange, error, disabled }) => {
       {open && (
         <ul
           ref={listRef}
-          className="absolute z-50 w-full mt-1 max-h-48 overflow-y-auto rounded-xl bg-[#1a1a2e] border border-white/10 shadow-2xl shadow-black/50"
+          className="absolute left-0 top-full z-[9999] w-full mt-1 max-h-48 overflow-y-auto rounded-xl bg-[#1a1a2e] border border-white/10 shadow-2xl shadow-black/50"
         >
           {filtered.length === 0 ? (
             <li className="px-3 py-3 text-slate-500 text-sm text-center">

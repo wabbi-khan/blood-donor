@@ -158,7 +158,9 @@ const LoginPage = () => {
                 Username
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium select-none">@</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium select-none">
+                  @
+                </span>
                 <input
                   id="login-email"
                   type="text"
@@ -208,7 +210,7 @@ const LoginPage = () => {
             </div>
 
             {/* Forgot password */}
-            <div className="text-right">
+            {/* <div className="text-right">
               <Link
                 to="/forgot-password"
                 id="login-forgot-link"
@@ -216,7 +218,7 @@ const LoginPage = () => {
               >
                 Forgot password?
               </Link>
-            </div>
+            </div> */}
 
             <button
               id="login-submit-btn"

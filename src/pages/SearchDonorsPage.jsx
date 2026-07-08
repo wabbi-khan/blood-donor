@@ -55,6 +55,10 @@ const SearchDonorsPage = () => {
   const [requestSuccess, setRequestSuccess] = useState(false);
 
   const detectLocation = () => {
+    if (userLocation) {
+      setUserLocation(null);
+      return;
+    }
     setLocLoading(true);
     setError("");
     navigator.geolocation.getCurrentPosition(
@@ -167,7 +171,12 @@ const SearchDonorsPage = () => {
       const emailjsServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
       const emailjsTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 
-      if (requestTarget.email && emailjsPublicKey && emailjsServiceId && emailjsTemplateId) {
+      if (
+        requestTarget.email &&
+        emailjsPublicKey &&
+        emailjsServiceId &&
+        emailjsTemplateId
+      ) {
         try {
           await axios.post(
             "https://api.emailjs.com/api/v1.0/email/send",
@@ -187,11 +196,14 @@ const SearchDonorsPage = () => {
             },
             {
               headers: { "Content-Type": "application/json" },
-            }
+            },
           );
           console.log("Email sent successfully via EmailJS.");
         } catch (emailErr) {
-          console.error("Failed to send email via EmailJS:", emailErr?.response?.data || emailErr.message);
+          console.error(
+            "Failed to send email via EmailJS:",
+            emailErr?.response?.data || emailErr.message,
+          );
         }
       }
 
@@ -259,7 +271,8 @@ const SearchDonorsPage = () => {
 
       <div className="relative w-full max-w-4xl space-y-8">
         {/* Search Box */}
-        <div className="glass-dark p-6 sm:p-8 rounded-2xl animate-fadeInUp">
+        <div className="relative z-[100] overflow-visible glass-dark p-6 sm:p-8 rounded-2xl animate-fadeInUp">
+          {" "}
           <div className="text-center mb-6">
             <h1 className="font-outfit font-extrabold text-3xl text-white mb-2">
               Find Blood Donors
@@ -268,13 +281,11 @@ const SearchDonorsPage = () => {
               Search for available donors near you by blood group
             </p>
           </div>
-
           {error && (
             <div className="bg-red-900/30 border border-red-800 text-red-300 rounded-lg px-4 py-3 text-sm mb-6 text-center">
               {error}
             </div>
           )}
-
           <form
             onSubmit={handleSearch}
             className="flex flex-col md:flex-row gap-4 items-end"
