@@ -15,6 +15,8 @@ import SOSPage from "./pages/SOSPage";
 import DonorProfilePage from "./pages/DonorProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SearchDonorsPage from "./pages/SearchDonorsPage";
+import CompleteProfilePage from "./pages/CompleteProfilePage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 const App = () => (
   <BrowserRouter>
@@ -25,8 +27,17 @@ const App = () => (
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
           {/* Protected */}
+          <Route
+            path="/complete-profile"
+            element={
+              <ProtectedRoute>
+                <CompleteProfilePage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={

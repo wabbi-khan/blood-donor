@@ -6,7 +6,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../store/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, profile } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -22,6 +22,17 @@ const ProtectedRoute = ({ children }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Profile is complete if it has phone, bloodType, city, and location coordinates
+  const isProfileComplete = profile && profile.phone && profile.bloodType && profile.city && profile.location;
+
+  if (!isProfileComplete && location.pathname !== "/complete-profile") {
+    return <Navigate to="/complete-profile" replace />;
+  }
+
+  if (isProfileComplete && location.pathname === "/complete-profile") {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

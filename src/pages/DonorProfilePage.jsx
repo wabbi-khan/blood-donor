@@ -5,8 +5,12 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createOrUpdateUserProfile } from "../services/authService";
+import {
+  createOrUpdateUserProfile,
+  updateUserPassword,
+} from "../services/authService";
 import { useAuth } from "../store/AuthContext";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name required"),
@@ -17,6 +21,16 @@ const profileSchema = z.object({
   isAvailable: z.boolean(),
 });
 
+const passwordSchema = z
+  .object({
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 const DonorProfilePage = () => {
   const { user, profile, refreshProfile } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -24,6 +38,13 @@ const DonorProfilePage = () => {
   const [error, setError] = useState("");
   const [location, setLocation] = useState(profile?.location || null);
   const [locLoading, setLocLoading] = useState(false);
+
+  // Password change states
+  const [passLoading, setPassLoading] = useState(false);
+  const [passSuccess, setPassSuccess] = useState(false);
+  const [passError, setPassError] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
 
   const {
     register,
@@ -39,6 +60,19 @@ const DonorProfilePage = () => {
       weight: profile?.weight || "",
       lastDonationDate: profile?.lastDonationDate || "",
       isAvailable: profile?.isAvailable ?? true,
+    },
+  });
+
+  const {
+    register: registerPass,
+    handleSubmit: handleSubmitPass,
+    reset: resetPassForm,
+    formState: { errors: passErrors },
+  } = useForm({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -96,6 +130,28 @@ const DonorProfilePage = () => {
       setError(err.message || "Failed to update profile.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onPasswordSubmit = async (data) => {
+    setPassError("");
+    setPassSuccess(false);
+    setPassLoading(true);
+    try {
+      await updateUserPassword(data.password);
+      setPassSuccess(true);
+      resetPassForm({ password: "", confirmPassword: "" });
+      setTimeout(() => setPassSuccess(false), 5000);
+    } catch (err) {
+      if (err.code === "auth/requires-recent-login") {
+        setPassError(
+          "Reauthentication required. Please sign out and log back in to change your password.",
+        );
+      } else {
+        setPassError(err.message || "Failed to update password.");
+      }
+    } finally {
+      setPassLoading(false);
     }
   };
 
@@ -298,6 +354,107 @@ const DonorProfilePage = () => {
             className="btn-LifeDrop w-full py-3 rounded-xl font-semibold"
           >
             {loading ? "Saving..." : "Save Changes"}
+          </button>
+        </form>
+      </div>
+
+      {/* Change Password Section */}
+      <div className="glass-dark p-8 mt-8">
+        <div className="mb-6">
+          <h2 className="font-outfit font-extrabold text-xl text-white mb-1">
+            Change Password
+          </h2>
+          <p className="text-slate-400 text-sm">
+            Update your account password safely.
+          </p>
+        </div>
+
+        {/* Password Success/Error */}
+        {passSuccess && (
+          <div className="bg-green-900/30 border border-green-700 text-green-300 rounded-lg px-4 py-3 text-sm mb-6">
+            ✅ Password updated successfully!
+          </div>
+        )}
+        {passError && (
+          <div className="bg-red-900/30 border border-red-800 text-red-300 rounded-lg px-4 py-3 text-sm mb-6">
+            {passError}
+          </div>
+        )}
+
+        <form
+          id="profile-password-form"
+          onSubmit={handleSubmitPass(onPasswordSubmit)}
+          className="space-y-5"
+        >
+          {/* New Password */}
+          <div>
+            <label
+              htmlFor="profile-password"
+              className="block text-sm text-slate-300 mb-1 font-medium"
+            >
+              New Password
+            </label>
+            <div className="relative">
+              <input
+                id="profile-password"
+                type={showPass ? "text" : "password"}
+                placeholder="••••••••"
+                {...registerPass("password")}
+                className="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass(!showPass)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+              >
+                {showPass ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
+            {passErrors.password && (
+              <p className="text-red-400 text-xs mt-1">
+                {passErrors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label
+              htmlFor="profile-confirm-password"
+              className="block text-sm text-slate-300 mb-1 font-medium"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                id="profile-confirm-password"
+                type={showConfirmPass ? "text" : "password"}
+                placeholder="••••••••"
+                {...registerPass("confirmPassword")}
+                className="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPass(!showConfirmPass)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+              >
+                {showConfirmPass ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
+            {passErrors.confirmPassword && (
+              <p className="text-red-400 text-xs mt-1">
+                {passErrors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+
+          <button
+            id="profile-password-save-btn"
+            type="submit"
+            disabled={passLoading}
+            className="btn-LifeDrop w-full py-3 rounded-xl font-semibold cursor-pointer"
+          >
+            {passLoading ? "Updating..." : "Update Password"}
           </button>
         </form>
       </div>
