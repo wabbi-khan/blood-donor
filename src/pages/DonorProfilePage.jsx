@@ -304,7 +304,6 @@ const DonorProfilePage = () => {
             </div>
           </div>
 
-          {/* Last Donation Date */}
           <div>
             <label
               htmlFor="profile-last-donation"
