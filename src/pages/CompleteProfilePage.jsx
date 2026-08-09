@@ -139,9 +139,9 @@ const CompleteProfilePage = () => {
                 className="block text-sm text-slate-300 mb-1 font-medium"
               >
                 Phone Number{" "}
-                <span className="text-slate-500">
+                {/* <span className="text-slate-500">
                   (private — only shared when you respond)
-                </span>
+                </span> */}
               </label>
               <input
                 id="comp-phone"
@@ -326,7 +326,9 @@ const CompleteProfilePage = () => {
               disabled={loading}
               className="btn-LifeDrop w-full py-3 rounded-xl font-semibold cursor-pointer"
             >
-              {loading ? "Completing Profile..." : "Complete Profile & Go to Dashboard"}
+              {loading
+                ? "Completing Profile..."
+                : "Complete Profile & Go to Dashboard"}
             </button>
           </form>
         </div>

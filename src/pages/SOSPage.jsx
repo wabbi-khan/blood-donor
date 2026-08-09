@@ -39,7 +39,10 @@ const sosSchema = z.object({
   urgency: z.enum(["critical", "urgent", "normal"]),
   contactPhone: z
     .string()
-    .regex(/^\+92[0-9]{10}$/, "Valid Pakistani number required"),
+    .regex(
+      /(^(\+92|0)[0-9]{10}$|^$)/,
+      "Enter a valid Pakistani number (e.g. 03001234567)",
+    ),
   notes: z.string().optional(),
 });
 
@@ -111,8 +114,8 @@ const SOSPage = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="glass-dark p-12 text-center max-w-md animate-fadeInUp">
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="glass-dark p-12 text-center w-full max-w-md  animate-fadeInUp">
           <div className="text-6xl mb-6">✅</div>
           <h2 className="font-outfit font-extrabold text-2xl text-white mb-3">
             SOS Alert Posted!
@@ -128,14 +131,14 @@ const SOSPage = () => {
             <button
               onClick={() => navigate("/dashboard")}
               id="sos-success-dashboard-btn"
-              className="btn-LifeDrop px-6 py-3 rounded-xl"
+              className="btn-LifeDrop px-6 py-2 rounded-xl whitespace-nowrap cursor-pointer"
             >
               Go to Dashboard
             </button>
             <button
               onClick={() => setSuccess(false)}
               id="sos-success-new-btn"
-              className="btn-outline-LifeDrop px-6 py-3 rounded-xl"
+              className="btn-outline-LifeDrop px-6 py-2 rounded-xl whitespace-nowrap cursor-pointer"
             >
               Post Another
             </button>
@@ -196,7 +199,7 @@ const SOSPage = () => {
             </div>
 
             {/* Blood Type + Units */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
               <div>
                 <label
                   htmlFor="sos-blood-type"
@@ -380,7 +383,7 @@ const SOSPage = () => {
               id="sos-submit-btn"
               type="submit"
               disabled={loading}
-              className="btn-LifeDrop w-full py-4 rounded-xl font-bold text-lg"
+              className="btn-LifeDrop w-full py-4 rounded-xl font-bold md:text-lg text-sm"
             >
               {loading ? "Broadcasting SOS..." : "🆘 Broadcast Emergency Alert"}
             </button>
