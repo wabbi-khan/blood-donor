@@ -17,6 +17,7 @@ const profileSchema = z.object({
   city: z.string().min(2, "City required"),
   age: z.coerce.number().min(18).max(65),
   weight: z.coerce.number().min(50),
+  bloodType: z.string().min(1, "Blood type is required"),
   lastDonationDate: z.string().optional(),
   isAvailable: z.boolean(),
 });
@@ -46,10 +47,13 @@ const DonorProfilePage = () => {
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
 
+  const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(profileSchema),
@@ -58,6 +62,7 @@ const DonorProfilePage = () => {
       city: profile?.city || "",
       age: profile?.age || "",
       weight: profile?.weight || "",
+      bloodType: profile?.bloodType || "",
       lastDonationDate: profile?.lastDonationDate || "",
       isAvailable: profile?.isAvailable ?? true,
     },
@@ -83,6 +88,7 @@ const DonorProfilePage = () => {
         city: profile.city || "",
         age: profile.age || "",
         weight: profile.weight || "",
+        bloodType: profile.bloodType || "",
         lastDonationDate: profile.lastDonationDate || "",
         isAvailable: profile.isAvailable ?? true,
       });
@@ -169,20 +175,36 @@ const DonorProfilePage = () => {
       </div>
 
       <div className="glass-dark p-8">
-        {/* Blood Type Badge (read-only) */}
-        <div className="flex items-center gap-4 mb-8 glass p-4 rounded-xl">
-          <div className="w-16 h-16 rounded-full bg-red-900/40 border-2 border-red-700 flex items-center justify-center text-2xl font-outfit font-extrabold text-red-400">
-            {profile?.bloodType || "—"}
+        {/* Blood Type */}
+        <div className="mb-6">
+          <label className="block text-sm text-slate-300 mb-2 font-medium">
+            Blood Type
+          </label>
+          <div className="grid grid-cols-4 gap-2">
+            {BLOOD_TYPES.map((type) => (
+              <label
+                key={type}
+                className={`flex items-center justify-center py-2 rounded-lg border cursor-pointer transition-all text-sm font-semibold ${
+                  watch("bloodType") === type
+                    ? "bg-red-900/50 border-red-500 text-red-300"
+                    : "bg-white/5 border-white/10 text-slate-400 hover:border-red-900/60"
+                }`}
+              >
+                <input
+                  type="radio"
+                  value={type}
+                  {...register("bloodType")}
+                  className="hidden"
+                />
+                {type}
+              </label>
+            ))}
           </div>
-          <div>
-            <p className="text-white font-semibold">
-              {profile?.name || "Donor"}
+          {errors.bloodType && (
+            <p className="text-red-400 text-xs mt-1">
+              {errors.bloodType.message}
             </p>
-            <p className="text-slate-400 text-sm">{user?.email}</p>
-            <p className="text-slate-500 text-xs mt-1">
-              Blood type can only be changed by contacting support
-            </p>
-          </div>
+          )}
         </div>
 
         {/* Success/Error */}

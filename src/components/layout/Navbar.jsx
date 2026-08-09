@@ -47,9 +47,9 @@ const Navbar = () => {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
-            <NavLink to="/" end className={navLinkClass}>
+            {/* <NavLink to="/" end className={navLinkClass}>
               Home
-            </NavLink>
+            </NavLink> */}
             {isAuthenticated && (
               <>
                 <NavLink to="/dashboard" className={navLinkClass}>
