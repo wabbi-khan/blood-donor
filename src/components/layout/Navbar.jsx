@@ -61,9 +61,12 @@ const Navbar = () => {
                 <NavLink to="/search-donors" className={navLinkClass}>
                   Find Donors
                 </NavLink>
-                {profile?.role === "donor" && (
-                  <NavLink to="/donor-profile" className={navLinkClass}>
-                    My Profile
+                <NavLink to="/donor-profile" className={navLinkClass}>
+                  My Profile
+                </NavLink>
+                {profile?.role === "admin" && (
+                  <NavLink to="/admin" className={navLinkClass}>
+                    🛡️ Admin
                   </NavLink>
                 )}
               </>

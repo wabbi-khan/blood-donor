@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./store/AuthContext";
 import Layout from "./components/layout/Layout";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import AdminRoute from "./components/common/AdminRoute";
 
 // Pages
 import HomePage from "./pages/HomePage";
@@ -17,6 +18,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import SearchDonorsPage from "./pages/SearchDonorsPage";
 import CompleteProfilePage from "./pages/CompleteProfilePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import AdminPage from "./pages/AdminPage";
 
 const App = () => (
   <BrowserRouter>
@@ -68,6 +70,16 @@ const App = () => (
               <ProtectedRoute>
                 <SearchDonorsPage />
               </ProtectedRoute>
+            }
+          />
+
+          {/* Admin — owner only (role: "admin") */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
             }
           />
 
