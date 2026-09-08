@@ -11,6 +11,7 @@ import {
 } from "../services/authService";
 import { useAuth } from "../store/AuthContext";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import SearchableCitySelect from "../components/common/SearchableCitySelect";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name required"),
@@ -54,6 +55,7 @@ const DonorProfilePage = () => {
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(profileSchema),
@@ -252,11 +254,13 @@ const DonorProfilePage = () => {
               >
                 City
               </label>
-              <input
-                id="profile-city"
-                type="text"
-                {...register("city")}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all text-sm"
+              <SearchableCitySelect
+                value={watch("city")}
+                onChange={(val) =>
+                  setValue("city", val, { shouldValidate: true })
+                }
+                error={errors.city?.message}
+                disabled={loading}
               />
               {errors.city && (
                 <p className="text-red-400 text-xs mt-1">
