@@ -24,8 +24,8 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Profile is complete if it has phone, bloodType, city, and location coordinates
-  const isProfileComplete = profile && profile.phone && profile.bloodType && profile.city && profile.location;
+  // Profile is complete if it has phone, bloodType, and city
+  const isProfileComplete = profile && profile.phone && profile.bloodType && profile.city;
 
   if (!isProfileComplete && location.pathname !== "/complete-profile") {
     return <Navigate to="/complete-profile" replace />;
