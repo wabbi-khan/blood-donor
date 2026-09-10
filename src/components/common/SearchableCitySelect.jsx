@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import PAKISTAN_CITIES from "../../utils/pakistanCities";
 
-const SearchableCitySelect = ({ value = "", onChange, error, disabled }) => {
+const SearchableCitySelect = ({ value = "", onChange, onSelect, error, disabled }) => {
   const [search, setSearch] = useState(value || "");
   const [open, setOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -32,6 +32,7 @@ const SearchableCitySelect = ({ value = "", onChange, error, disabled }) => {
   const handleSelect = (city) => {
     setSearch(city);
     onChange(city);
+    if (onSelect) onSelect(city);
     setOpen(false);
     setHighlightedIndex(-1);
   };

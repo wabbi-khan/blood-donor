@@ -57,6 +57,8 @@ const SearchDonorsPage = () => {
   const detectLocation = () => {
     if (userLocation) {
       setUserLocation(null);
+      setDonors([]);
+      setHasSearched(false);
       return;
     }
     setLocLoading(true);
@@ -68,6 +70,8 @@ const SearchDonorsPage = () => {
           lng: pos.coords.longitude,
         });
         setCity(""); // Clear city if using GPS
+        setDonors([]);
+        setHasSearched(false);
         setLocLoading(false);
       },
       () => {
@@ -109,8 +113,9 @@ const SearchDonorsPage = () => {
 
       // Filter by city client-side to avoid index requirement errors on composite queries
       if (city) {
+        const selectedCity = city.trim().toLowerCase();
         results = results.filter(
-          (donor) => donor.city?.toLowerCase() === city.toLowerCase(),
+          (donor) => donor.city?.trim().toLowerCase() === selectedCity,
         );
       }
 
@@ -317,6 +322,10 @@ const SearchDonorsPage = () => {
                   onChange={(val) => {
                     setCity(val);
                     setUserLocation(null);
+                  }}
+                  onSelect={() => {
+                    setDonors([]);
+                    setHasSearched(false);
                   }}
                   disabled={!!userLocation}
                 />

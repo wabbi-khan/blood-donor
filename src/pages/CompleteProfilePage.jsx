@@ -85,7 +85,7 @@ const CompleteProfilePage = () => {
         name: user.displayName || user.email.split("@")[0],
         phone: data.phone,
         bloodType: data.bloodType,
-        city: data.city,
+        city: data.city.trim(),
         age: data.age,
         weight: data.weight,
         lastDonationDate: data.lastDonationDate || null,

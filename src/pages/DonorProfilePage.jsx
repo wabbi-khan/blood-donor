@@ -127,6 +127,7 @@ const DonorProfilePage = () => {
 
       await createOrUpdateUserProfile(user, {
         ...data,
+        city: data.city?.trim(),
         isAvailable, // Override if needed
         lastDonationDate: data.lastDonationDate || null,
         ...(location ? { location } : {}),
