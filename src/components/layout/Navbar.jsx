@@ -66,7 +66,7 @@ const Navbar = () => {
                 </NavLink>
                 {profile?.role === "admin" && (
                   <NavLink to="/admin" className={navLinkClass}>
-                    🛡️ Admin
+                    Admin
                   </NavLink>
                 )}
               </>

@@ -343,7 +343,7 @@ const SOSPage = () => {
               <input
                 id="sos-contact"
                 type="tel"
-                placeholder="+92 300 1234567"
+                placeholder="03001234567"
                 {...register("contactPhone")}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
               />

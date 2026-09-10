@@ -272,7 +272,7 @@ const CompleteProfilePage = () => {
             {/* GPS Location */}
             <div>
               <label className="block text-sm text-slate-300 mb-2 font-medium">
-                GPS Location
+                GPS Location (Optional)
               </label>
               <button
                 id="comp-detect-location-btn"
