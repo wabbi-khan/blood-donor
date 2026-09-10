@@ -65,10 +65,6 @@ const CompleteProfilePage = () => {
   };
 
   const onSubmit = async (data) => {
-    if (!location) {
-      setError("GPS location is required for emergency matching.");
-      return;
-    }
     setError("");
     setLoading(true);
     try {
@@ -296,7 +292,7 @@ const CompleteProfilePage = () => {
                     : "📍 Detect My Location"}
               </button>
               <p className="text-slate-500 text-xs mt-1">
-                Required for emergency matching within 10–50 KM radius
+                Optional — for emergency matching within 10–50 KM radius
               </p>
             </div>
 

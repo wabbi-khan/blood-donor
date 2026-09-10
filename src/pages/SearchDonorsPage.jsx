@@ -12,6 +12,7 @@ import { distanceBetween } from "geofire-common";
 import { db } from "../services/firebase";
 import { useAuth } from "../store/AuthContext";
 import SearchableCitySelect from "../components/common/SearchableCitySelect";
+import { FiChevronDown } from "react-icons/fi";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -299,18 +300,29 @@ const SearchDonorsPage = () => {
               <label className="block text-sm text-slate-300 mb-1 font-medium">
                 Blood Type *
               </label>
-              <select
-                value={bloodType}
-                onChange={(e) => setBloodType(e.target.value)}
-                className="w-full bg-[#0f3460] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all"
-              >
-                <option value="">Select Blood Type</option>
-                {BLOOD_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
+              <div className="relative">
+                <select
+                  value={bloodType}
+                  onChange={(e) => setBloodType(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-10 text-base text-white focus:outline-none focus:border-red-500/60 transition-all cursor-pointer
+      appearance-none [-webkit-appearance:none] [-webkit-tap-highlight-color:transparent]"
+                >
+                  <option value="" className="bg-white/5 text-white">
+                    Select Blood Type
                   </option>
-                ))}
-              </select>
+                  {BLOOD_TYPES.map((t) => (
+                    <option key={t} value={t} className="bg-white/5 text-white">
+                      {t}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Custom chevron (Safari's native arrow is removed by appearance-none) */}
+                <FiChevronDown
+                  size={18}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                />
+              </div>
             </div>
             <div className="">
               <label className="block text-sm text-slate-300 mb-1 font-medium">
@@ -581,22 +593,35 @@ const SearchDonorsPage = () => {
                       <label className="block text-sm text-slate-300 mb-1 font-medium">
                         Urgency
                       </label>
-                      <select
-                        value={requestForm.urgency}
-                        onChange={(e) =>
-                          setRequestForm({
-                            ...requestForm,
-                            urgency: e.target.value,
-                          })
-                        }
-                        className="w-full bg-[#0f3460] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all"
-                      >
-                        {URGENCY_LEVELS.map((u) => (
-                          <option key={u.value} value={u.value}>
-                            {u.label}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="relative">
+                        <select
+                          value={requestForm.urgency}
+                          onChange={(e) =>
+                            setRequestForm({
+                              ...requestForm,
+                              urgency: e.target.value,
+                            })
+                          }
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-10 text-base text-white focus:outline-none focus:border-red-500/60 transition-all cursor-pointer
+      appearance-none [-webkit-appearance:none] [-webkit-tap-highlight-color:transparent]"
+                        >
+                          {URGENCY_LEVELS.map((u) => (
+                            <option
+                              key={u.value}
+                              value={u.value}
+                              className="bg-white/5 text-white"
+                            >
+                              {u.label}
+                            </option>
+                          ))}
+                        </select>
+
+                        {/* Custom chevron (replaces Safari's native arrow) */}
+                        <FiChevronDown
+                          size={18}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                        />
+                      </div>
                     </div>
                     <div>
                       <label className="block text-sm text-slate-300 mb-1 font-medium">

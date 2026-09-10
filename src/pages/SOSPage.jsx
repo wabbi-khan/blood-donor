@@ -10,6 +10,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useAuth } from "../store/AuthContext";
 import SearchableCitySelect from "../components/common/SearchableCitySelect";
+import { FiChevronDown } from "react-icons/fi";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const URGENCY_LEVELS = [
@@ -207,18 +208,33 @@ const SOSPage = () => {
                 >
                   Blood Type Needed
                 </label>
-                <select
-                  id="sos-blood-type"
-                  {...register("bloodType")}
-                  className="w-full bg-[#0f3460] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all"
-                >
-                  <option value="">Select</option>
-                  {BLOOD_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                <div className="relative">
+                  <select
+                    id="sos-blood-type"
+                    {...register("bloodType")}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-10 text-base text-white focus:outline-none focus:border-red-500/60 transition-all cursor-pointer
+      appearance-none [-webkit-appearance:none] [-webkit-tap-highlight-color:transparent]"
+                  >
+                    <option value="" className="bg-white/5 text-white">
+                      Select
                     </option>
-                  ))}
-                </select>
+                    {BLOOD_TYPES.map((t) => (
+                      <option
+                        key={t}
+                        value={t}
+                        className="bg-white/5 text-white"
+                      >
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Custom chevron (replaces Safari's native arrow) */}
+                  <FiChevronDown
+                    size={18}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                  />
+                </div>
                 {errors.bloodType && (
                   <p className="text-red-400 text-xs mt-1">
                     {errors.bloodType.message}
