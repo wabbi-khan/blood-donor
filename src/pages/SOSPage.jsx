@@ -82,10 +82,10 @@ const SOSPage = () => {
   };
 
   const onSubmit = async (data) => {
-    if (!location) {
-      setError("Hospital location is required for donor matching.");
-      return;
-    }
+    // if (!location) {
+    //   setError("Hospital location is required for donor matching.");
+    //   return;
+    // }
     setError("");
     setLoading(true);
     try {
@@ -115,7 +115,7 @@ const SOSPage = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center mx-4">
         <div className="glass-dark p-12 text-center w-full max-w-md  animate-fadeInUp">
           <div className="text-6xl mb-6">✅</div>
           <h2 className="font-outfit font-extrabold text-2xl text-white mb-3">
@@ -128,7 +128,7 @@ const SOSPage = () => {
             Eligible donors within 50 KM have been notified via push
             notification. You&apos;ll be contacted when a donor responds.
           </p>
-          <div className="flex gap-3 justify-center">
+          <div className="grid grid-cols-1 gap-4 md:flex md:gap-3 md:flex-nowrap flex-wrap justify-center">
             <button
               onClick={() => navigate("/dashboard")}
               id="sos-success-dashboard-btn"
@@ -357,7 +357,7 @@ const SOSPage = () => {
             {/* Hospital Location */}
             <div>
               <label className="block text-sm text-slate-300 mb-2 font-medium">
-                Hospital Location (GPS)
+                Hospital Location (Optional)
               </label>
               <button
                 id="sos-detect-location-btn"

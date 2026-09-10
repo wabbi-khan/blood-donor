@@ -269,7 +269,7 @@ const DonorProfilePage = () => {
                 </p>
               )}
             </div>
-            <div>
+            <div className="col-span-3 sm:col-span-1">
               <label
                 htmlFor="profile-age"
                 className="block text-sm text-slate-300 mb-1 font-medium"
@@ -288,7 +288,7 @@ const DonorProfilePage = () => {
                 </p>
               )}
             </div>
-            <div>
+            <div className="col-span-3 sm:col-span-1">
               <label
                 htmlFor="profile-weight"
                 className="block text-sm text-slate-300 mb-1 font-medium"
@@ -378,7 +378,7 @@ const DonorProfilePage = () => {
             id="profile-save-btn"
             type="submit"
             disabled={loading}
-            className="btn-LifeDrop w-full py-3 rounded-xl font-semibold"
+            className="btn-LifeDrop w-full py-3 rounded-xl font-semibold md:text-md text-sm"
           >
             {loading ? "Saving..." : "Save Changes"}
           </button>
@@ -479,7 +479,7 @@ const DonorProfilePage = () => {
             id="profile-password-save-btn"
             type="submit"
             disabled={passLoading}
-            className="btn-LifeDrop w-full py-3 rounded-xl font-semibold cursor-pointer"
+            className="btn-LifeDrop w-full py-3 rounded-xl font-semibold cursor-pointer md:text-md text-sm"
           >
             {passLoading ? "Updating..." : "Update Password"}
           </button>

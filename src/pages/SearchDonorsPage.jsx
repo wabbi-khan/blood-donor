@@ -294,7 +294,7 @@ const SearchDonorsPage = () => {
           )}
           <form
             onSubmit={handleSearch}
-            className="flex flex-col md:flex-row gap-4 items-end"
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
           >
             <div className="flex-1 w-full">
               <label className="block text-sm text-slate-300 mb-1 font-medium">
@@ -362,7 +362,7 @@ const SearchDonorsPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn-LifeDrop w-full md:w-auto px-8 py-3 rounded-xl font-bold h-[50px] mt-2 md:mt-0"
+              className="btn-LifeDrop w-full  px-8 py-3 rounded-xl font-bold h-[50px]"
             >
               {loading ? "Searching..." : "🔍 Search"}
             </button>

@@ -208,7 +208,7 @@ const CompleteProfilePage = () => {
                   </p>
                 )}
               </div>
-              <div>
+              <div className="col-span-3 sm:col-span-1">
                 <label
                   htmlFor="comp-age"
                   className="block text-sm text-slate-300 mb-1 font-medium"
@@ -228,7 +228,7 @@ const CompleteProfilePage = () => {
                   </p>
                 )}
               </div>
-              <div>
+              <div className="col-span-3 sm:col-span-1">
                 <label
                   htmlFor="comp-weight"
                   className="block text-sm text-slate-300 mb-1 font-medium"

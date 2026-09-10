@@ -91,7 +91,7 @@ const HomePage = () => {
             <span className="text-white">Find Blood Donors</span>
             <br />
             <span style={{ color: "var(--LifeDrop-red-light)" }}>
-              Near You — Instantly.
+              Near You Instantly.
             </span>
           </h1>
 
@@ -99,7 +99,7 @@ const HomePage = () => {
           <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 animate-fadeInUp delay-200 leading-relaxed">
             LifeDrop connects emergency blood requesters with nearby donors
             using real-time geo-location matching and instant push notifications
-            — with full donor privacy protection.
+            with full donor privacy protection.
           </p>
 
           {/* CTA Buttons */}
@@ -109,14 +109,14 @@ const HomePage = () => {
                 <Link
                   to="/sos"
                   id="hero-sos-btn"
-                  className="btn-LifeDrop px-8 py-4 rounded-xl text-lg font-bold inline-flex items-center gap-2"
+                  className="btn-LifeDrop px-8 py-4 rounded-xl md:text-lg text-sm font-bold inline-flex items-center gap-2"
                 >
                   <span>🆘</span> Post SOS Alert
                 </Link>
                 <Link
                   to="/dashboard"
                   id="hero-dashboard-btn"
-                  className="btn-outline-LifeDrop px-8 py-4 rounded-xl text-lg inline-flex items-center gap-2"
+                  className="btn-outline-LifeDrop px-8 py-4 rounded-xl md:text-lg text-sm font-bold inline-flex items-center gap-2"
                 >
                   <span>📋</span> My Dashboard
                 </Link>
@@ -276,7 +276,7 @@ const HomePage = () => {
         <Link
           to="/register"
           id="footer-cta-btn"
-          className="btn-LifeDrop px-10 py-4 rounded-xl text-lg font-bold inline-flex items-center gap-2 animate-pulse-red"
+          className="btn-LifeDrop px-10 py-4 rounded-xl md:text-lg text-sm font-bold inline-flex items-center gap-2 animate-pulse-red"
         >
           <span>🫀</span> Become a Donor Today
         </Link>

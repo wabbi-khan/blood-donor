@@ -196,7 +196,7 @@ const DashboardPage = () => {
         <div className="flex items-center gap-3 mb-2">
           <span className="text-4xl">👋</span>
           <div>
-            <h1 className="font-outfit font-extrabold text-3xl text-white capitalize">
+            <h1 className="font-outfit font-extrabold md:text-3xl text-xl text-white capitalize">
               Hello, {profile?.name || "there"}!
             </h1>
             <p className="text-slate-400 text-sm">
@@ -539,14 +539,14 @@ const DashboardPage = () => {
             <div className="space-y-3">
               <Link
                 to="/sos"
-                className="btn-LifeDrop w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
+                className="btn-LifeDrop w-full py-3 rounded-xl font-semibold md:text-md text-sm flex items-center justify-center gap-2"
               >
                 <span>🆘</span> Create New SOS
               </Link>
               {isDonor && (
                 <Link
                   to="/donor-profile"
-                  className="btn-outline-LifeDrop w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
+                  className="btn-outline-LifeDrop w-full py-3 rounded-xl font-semibold md:text-md text-sm  flex items-center justify-center gap-2"
                 >
                   <span>✏️</span> Edit Profile
                 </Link>
