@@ -30,12 +30,11 @@ const registrationSchema = z
         /^[a-zA-Z0-9_]+$/,
         "Username can only contain letters, numbers, and underscores",
       ),
-    phone: z
-      .string()
-      .regex(
-        /(^(\+92|0)[0-9]{10}$|^$)/,
-        "Enter a valid Pakistani number (e.g. 03001234567)",
-      ),
+    phone: z.string(),
+    // .regex(
+    //   /(^(\+92|0)[0-9]{10}$|^$)/,
+    //   "Enter a valid Pakistani number (e.g. 03001234567)",
+    // ),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string(),
     bloodType: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], {

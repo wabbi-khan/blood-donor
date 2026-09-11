@@ -38,12 +38,11 @@ const sosSchema = z.object({
   hospital: z.string().min(3, "Hospital name required"),
   city: z.string().min(2, "City required"),
   urgency: z.enum(["critical", "urgent", "normal"]),
-  contactPhone: z
-    .string()
-    .regex(
-      /(^(\+92|0)[0-9]{10}$|^$)/,
-      "Enter a valid Pakistani number (e.g. 03001234567)",
-    ),
+  contactPhone: z.string(),
+  // .regex(
+  //   /(^(\+92|0)[0-9]{10}$|^$)/,
+  //   "Enter a valid Pakistani number (e.g. 03001234567)",
+  // ),
   notes: z.string().optional(),
 });
 
@@ -190,7 +189,7 @@ const SOSPage = () => {
                 type="text"
                 placeholder="Muhammad Ali"
                 {...register("patientName")}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
               />
               {errors.patientName && (
                 <p className="text-red-400 text-xs mt-1">
@@ -212,7 +211,7 @@ const SOSPage = () => {
                   <select
                     id="sos-blood-type"
                     {...register("bloodType")}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-10 text-base text-white focus:outline-none focus:border-red-500/60 transition-all cursor-pointer
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-base text-white focus:outline-none focus:border-red-500/60 transition-all cursor-pointer
       appearance-none [-webkit-appearance:none] [-webkit-tap-highlight-color:transparent]"
                   >
                     <option value="" className="bg-white/5 text-white">
@@ -254,7 +253,7 @@ const SOSPage = () => {
                   min={1}
                   max={10}
                   {...register("unitsNeeded")}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-red-500/60 transition-all"
                 />
                 {errors.unitsNeeded && (
                   <p className="text-red-400 text-xs mt-1">
@@ -277,7 +276,7 @@ const SOSPage = () => {
                 type="text"
                 placeholder="Services Hospital Lahore"
                 {...register("hospital")}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
               />
               {errors.hospital && (
                 <p className="text-red-400 text-xs mt-1">

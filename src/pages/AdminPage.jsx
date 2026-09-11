@@ -2,13 +2,21 @@
 // LifeDrop — Admin Dashboard Page
 // ────────────────────────────────────────────────────────────
 import { useState, useEffect } from "react";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../services/firebase";
 import {
   FiUsers,
   FiAlertCircle,
   FiActivity,
   FiRefreshCw,
+  FiTrash2,
 } from "react-icons/fi";
 
 const formatDate = (ts) => {
@@ -74,7 +82,37 @@ const StatCard = ({ icon: Icon, label, value, color }) => (
   </div>
 );
 
-const UsersTable = ({ users }) => (
+const ConfirmModal = ({ open, title, message, onConfirm, onCancel, loading }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+      <div className="glass-dark w-full max-w-md p-6">
+        <h3 className="text-lg font-outfit font-bold text-white mb-2">
+          {title}
+        </h3>
+        <p className="text-slate-400 text-sm mb-6">{message}</p>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onCancel}
+            disabled={loading}
+            className="px-4 py-2 rounded-xl text-sm font-medium text-slate-300 bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={loading}
+            className="px-4 py-2 rounded-xl text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-all cursor-pointer disabled:opacity-50"
+          >
+            {loading ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const UsersTable = ({ users, onDelete }) => (
   <div className="overflow-x-auto">
     <table className="w-full text-sm">
       <thead>
@@ -88,6 +126,7 @@ const UsersTable = ({ users }) => (
             "Role",
             "Availability",
             "Joined",
+            "Action",
           ].map((h) => (
             <th
               key={h}
@@ -102,7 +141,7 @@ const UsersTable = ({ users }) => (
         {users.length === 0 ? (
           <tr>
             <td
-              colSpan={8}
+              colSpan={9}
               className="py-10 text-center text-slate-500 text-sm"
             >
               No users found.
@@ -138,6 +177,15 @@ const UsersTable = ({ users }) => (
               <td className="py-3 px-4 text-slate-400 whitespace-nowrap">
                 {formatDate(u.createdAt)}
               </td>
+              <td className="py-3 px-4">
+                <button
+                  onClick={() => onDelete("users", u.id, u.name || u.displayName || u.username || "this user")}
+                  className="text-slate-500 hover:text-red-400 transition-colors cursor-pointer"
+                  title="Delete user"
+                >
+                  <FiTrash2 className="w-4 h-4" />
+                </button>
+              </td>
             </tr>
           ))
         )}
@@ -146,7 +194,7 @@ const UsersTable = ({ users }) => (
   </div>
 );
 
-const SOSTable = ({ requests }) => (
+const SOSTable = ({ requests, onDelete }) => (
   <div className="overflow-x-auto">
     <table className="w-full text-sm">
       <thead>
@@ -160,6 +208,7 @@ const SOSTable = ({ requests }) => (
             "Status",
             "Urgency",
             "Created",
+            "Action",
           ].map((h) => (
             <th
               key={h}
@@ -174,7 +223,7 @@ const SOSTable = ({ requests }) => (
         {requests.length === 0 ? (
           <tr>
             <td
-              colSpan={8}
+              colSpan={9}
               className="py-10 text-center text-slate-500 text-sm"
             >
               No SOS requests found.
@@ -213,6 +262,15 @@ const SOSTable = ({ requests }) => (
               <td className="py-3 px-4 text-slate-400 whitespace-nowrap">
                 {formatDate(r.createdAt)}
               </td>
+              <td className="py-3 px-4">
+                <button
+                  onClick={() => onDelete("sos_requests", r.id, r.patientName || r.requesterName || "this request")}
+                  className="text-slate-500 hover:text-red-400 transition-colors cursor-pointer"
+                  title="Delete SOS request"
+                >
+                  <FiTrash2 className="w-4 h-4" />
+                </button>
+              </td>
             </tr>
           ))
         )}
@@ -221,7 +279,7 @@ const SOSTable = ({ requests }) => (
   </div>
 );
 
-const DonorRequestsTable = ({ requests }) => (
+const DonorRequestsTable = ({ requests, onDelete }) => (
   <div className="overflow-x-auto">
     <table className="w-full text-sm">
       <thead>
@@ -235,6 +293,7 @@ const DonorRequestsTable = ({ requests }) => (
             "Status",
             "Message",
             "Created",
+            "Action",
           ].map((h) => (
             <th
               key={h}
@@ -249,7 +308,7 @@ const DonorRequestsTable = ({ requests }) => (
         {requests.length === 0 ? (
           <tr>
             <td
-              colSpan={8}
+              colSpan={9}
               className="py-10 text-center text-slate-500 text-sm"
             >
               No donor requests found.
@@ -282,6 +341,15 @@ const DonorRequestsTable = ({ requests }) => (
               <td className="py-3 px-4 text-slate-400 whitespace-nowrap">
                 {formatDate(r.createdAt)}
               </td>
+              <td className="py-3 px-4">
+                <button
+                  onClick={() => onDelete("donor_requests", r.id, r.requesterName || "this request")}
+                  className="text-slate-500 hover:text-red-400 transition-colors cursor-pointer"
+                  title="Delete donor request"
+                >
+                  <FiTrash2 className="w-4 h-4" />
+                </button>
+              </td>
             </tr>
           ))
         )}
@@ -303,6 +371,8 @@ const AdminPage = () => {
   const [donorRequests, setDonorRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [modal, setModal] = useState({ open: false, collection: "", id: "", name: "" });
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -362,6 +432,26 @@ const AdminPage = () => {
 
   const openSOS = sosRequests.filter((r) => r.status === "open").length;
   const availableDonors = users.filter((u) => u.isAvailable).length;
+
+  const handleDeleteClick = (collectionName, id, name) => {
+    setModal({ open: true, collection: collectionName, id, name });
+  };
+
+  const handleDeleteConfirm = async () => {
+    setDeleting(true);
+    try {
+      await deleteDoc(doc(db, modal.collection, modal.id));
+      setModal({ open: false, collection: "", id: "", name: "" });
+    } catch (err) {
+      console.error("Delete failed:", err);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setModal({ open: false, collection: "", id: "", name: "" });
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -469,7 +559,7 @@ const AdminPage = () => {
                     </span>{" "}
                     of {users.length} users
                   </p>
-                  <UsersTable users={filteredUsers} />
+                  <UsersTable users={filteredUsers} onDelete={handleDeleteClick} />
                 </>
               )}
               {activeTab === "sos" && (
@@ -481,7 +571,7 @@ const AdminPage = () => {
                     </span>{" "}
                     of {sosRequests.length} SOS requests
                   </p>
-                  <SOSTable requests={filteredSOS} />
+                  <SOSTable requests={filteredSOS} onDelete={handleDeleteClick} />
                 </>
               )}
               {activeTab === "donor_requests" && (
@@ -493,13 +583,22 @@ const AdminPage = () => {
                     </span>{" "}
                     of {donorRequests.length} donor requests
                   </p>
-                  <DonorRequestsTable requests={filteredDonorRequests} />
+                  <DonorRequestsTable requests={filteredDonorRequests} onDelete={handleDeleteClick} />
                 </>
               )}
             </>
           )}
         </div>
       </div>
+
+      <ConfirmModal
+        open={modal.open}
+        title={`Delete ${modal.collection === "users" ? "User" : modal.collection === "sos_requests" ? "SOS Request" : "Donor Request"}`}
+        message={`Are you sure you want to delete "${modal.name}"? This action cannot be undone.`}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        loading={deleting}
+      />
     </div>
   );
 };

@@ -12,6 +12,10 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == uid;
     }
 
+    function isAdmin() {
+      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
     // ── Users Collection ─────────────────────────────────────
     // Users can read/write their own profile.
     // Authenticated users can read other donor profiles
@@ -25,8 +29,8 @@ service cloud.firestore {
       allow create: if isOwner(uid);
       allow update: if isOwner(uid);
 
-      // No deletion via client SDK
-      allow delete: if false;
+      // No deletion via client SDK (admin can delete)
+      allow delete: if isAdmin();
     }
 
     // ── SOS Requests Collection ──────────────────────────────
@@ -40,8 +44,9 @@ service cloud.firestore {
 
       // Allow original requester to delete, but allow any authenticated user to update (to respond)
       allow update: if isAuthenticated();
-      allow delete: if isAuthenticated()
-        && resource.data.requesterId == request.auth.uid;
+      allow delete: if isAdmin()
+        || (isAuthenticated()
+        && resource.data.requesterId == request.auth.uid);
     }
 
     // ── Donor Responses Sub-collection ──────────────────────
@@ -59,8 +64,9 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated();
       allow update: if isAuthenticated();
-      allow delete: if isAuthenticated()
-        && resource.data.requesterId == request.auth.uid;
+      allow delete: if isAdmin()
+        || (isAuthenticated()
+        && resource.data.requesterId == request.auth.uid);
     }
 
     // ── Live Tracking Collection (Realtime DB handles most of this) ──

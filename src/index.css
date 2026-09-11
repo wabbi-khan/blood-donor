@@ -40,6 +40,10 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
+a,
+button {
+  cursor: pointer;
+}
 
 h1,
 h2,

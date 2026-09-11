@@ -13,12 +13,11 @@ import SearchableCitySelect from "../components/common/SearchableCitySelect";
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const completeProfileSchema = z.object({
-  phone: z
-    .string()
-    .regex(
-      /^(\+92|0)[0-9]{10}$/,
-      "Enter a valid Pakistani number (e.g. 03001234567)",
-    ),
+  phone: z.string(),
+  // .regex(
+  //   /^(\+92|0)[0-9]{10}$/,
+  //   "Enter a valid Pakistani number (e.g. 03001234567)",
+  // ),
   bloodType: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], {
     required_error: "Please select your blood type",
   }),

@@ -13,6 +13,9 @@ import { db } from "../services/firebase";
 import { useAuth } from "../store/AuthContext";
 import SearchableCitySelect from "../components/common/SearchableCitySelect";
 import { FiChevronDown } from "react-icons/fi";
+import { LuDroplets } from "react-icons/lu";
+import { BsDroplet } from "react-icons/bs";
+import { MdOutlineLocalPhone } from "react-icons/md";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -304,7 +307,7 @@ const SearchDonorsPage = () => {
                 <select
                   value={bloodType}
                   onChange={(e) => setBloodType(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-10 text-base text-white focus:outline-none focus:border-red-500/60 transition-all cursor-pointer
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-base text-white focus:outline-none focus:border-red-500/60 transition-all cursor-pointer
       appearance-none [-webkit-appearance:none] [-webkit-tap-highlight-color:transparent]"
                 >
                   <option value="" className="bg-white/5 text-white">
@@ -362,7 +365,7 @@ const SearchDonorsPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn-LifeDrop w-full  px-8 py-3 rounded-xl font-bold h-[50px]"
+              className="btn-LifeDrop w-full  px-8 py-3 rounded-xl font-bold h-[45px]"
             >
               {loading ? "Searching..." : "🔍 Search"}
             </button>
@@ -454,13 +457,15 @@ const SearchDonorsPage = () => {
                             onClick={() => openRequestModal(donor)}
                             className="w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 bg-red-600/20 text-red-400 border border-red-600/50 hover:bg-red-600 hover:text-white transition-colors"
                           >
-                            🩸 Request Donor
+                            <BsDroplet />
+                            Request Donor
                           </button>
                           <a
                             href={`tel:${donor.phone}`}
                             className="w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 bg-green-600/20 text-green-400 border border-green-600/50 hover:bg-green-600 hover:text-white transition-colors"
                           >
-                            📞 Call Donor ({donor.phone})
+                            <MdOutlineLocalPhone />
+                            Call Donor ({donor.phone})
                           </a>
                           {/* <div>
                             <button

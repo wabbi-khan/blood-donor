@@ -15,6 +15,11 @@ import SearchableCitySelect from "../components/common/SearchableCitySelect";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name required"),
+  phone: z.string(),
+  // .regex(
+  //   /^(\+92|0)[0-9]{10}$/,
+  //   "Enter a valid Pakistani number (e.g. 03001234567)",
+  // ),
   city: z.string().min(2, "City required"),
   age: z.coerce.number().min(18).max(65),
   weight: z.coerce.number().min(50),
@@ -61,6 +66,7 @@ const DonorProfilePage = () => {
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: profile?.name || "",
+      phone: profile?.phone || "",
       city: profile?.city || "",
       age: profile?.age || "",
       weight: profile?.weight || "",
@@ -87,6 +93,7 @@ const DonorProfilePage = () => {
     if (profile) {
       reset({
         name: profile.name || "",
+        phone: profile.phone || "",
         city: profile.city || "",
         age: profile.age || "",
         weight: profile.weight || "",
@@ -227,23 +234,49 @@ const DonorProfilePage = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-5"
         >
-          {/* Name */}
-          <div>
-            <label
-              htmlFor="profile-name"
-              className="block text-sm text-slate-300 mb-1 font-medium"
-            >
-              Full Name
-            </label>
-            <input
-              id="profile-name"
-              type="text"
-              {...register("name")}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500/60 transition-all"
-            />
-            {errors.name && (
-              <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>
-            )}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Name */}
+            <div className="col-span-3 sm:col-span-1">
+              <label
+                htmlFor="profile-name"
+                className="block text-sm text-slate-300 mb-1 font-medium"
+              >
+                Full Name
+              </label>
+              <input
+                id="profile-name"
+                type="text"
+                {...register("name")}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-red-500/60 transition-all"
+              />
+              {errors.name && (
+                <p className="text-red-400 text-xs mt-1">
+                  {errors.name.message}
+                </p>
+              )}
+            </div>
+
+            {/* Phone */}
+            <div className="col-span-3 sm:col-span-1">
+              <label
+                htmlFor="profile-phone"
+                className="block text-sm text-slate-300 mb-1 font-medium"
+              >
+                Phone Number
+              </label>
+              <input
+                id="profile-phone"
+                type="tel"
+                placeholder="03001234567"
+                {...register("phone")}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 transition-all"
+              />
+              {errors.phone && (
+                <p className="text-red-400 text-xs mt-1">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* City, Age, Weight */}
