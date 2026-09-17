@@ -4,6 +4,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../store/AuthContext";
 import { useEffect, useState } from "react";
+import usePageSEO from "../hooks/usePageSEO";
 import {
   collection,
   query,
@@ -43,6 +44,13 @@ const StatCard = ({ icon, label, value, color = "text-red-400" }) => (
 const DashboardPage = () => {
   const { user, profile } = useAuth();
   const isDonor = profile?.role === "donor";
+
+  usePageSEO({
+    title: "Dashboard — LifeDrop",
+    description:
+      "Your LifeDrop dashboard — view active SOS alerts near you, track your donation requests, and manage your availability.",
+    canonicalPath: "/dashboard",
+  });
 
   const [activeAlerts, setActiveAlerts] = useState([]);
   const [myRequests, setMyRequests] = useState([]);

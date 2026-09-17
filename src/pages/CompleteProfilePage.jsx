@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createOrUpdateUserProfile } from "../services/authService";
 import { useAuth } from "../store/AuthContext";
+import usePageSEO from "../hooks/usePageSEO";
 import SearchableCitySelect from "../components/common/SearchableCitySelect";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
@@ -40,6 +41,13 @@ const CompleteProfilePage = () => {
   const [error, setError] = useState("");
   const [location, setLocation] = useState(null);
   const [locLoading, setLocLoading] = useState(false);
+
+  usePageSEO({
+    title: "Complete Your Profile — LifeDrop",
+    description:
+      "Finish setting up your LifeDrop donor profile with your blood type, city, and availability to start helping save lives.",
+    canonicalPath: "/complete-profile",
+  });
 
   const {
     register,

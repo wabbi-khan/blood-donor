@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useAuth } from "../store/AuthContext";
+import usePageSEO from "../hooks/usePageSEO";
 import SearchableCitySelect from "../components/common/SearchableCitySelect";
 import { FiChevronDown } from "react-icons/fi";
 
@@ -53,6 +54,14 @@ const SOSPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [location, setLocation] = useState(null);
+
+  usePageSEO({
+    title: "SOS Blood Alert — LifeDrop",
+    description:
+      "Send an emergency SOS blood request on LifeDrop. Compatible donors within 50 KM are notified instantly.",
+    canonicalPath: "/sos",
+  });
+
   const [locLoading, setLocLoading] = useState(false);
 
   const {

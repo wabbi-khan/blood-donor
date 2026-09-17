@@ -11,6 +11,7 @@ import {
 import { distanceBetween } from "geofire-common";
 import { db } from "../services/firebase";
 import { useAuth } from "../store/AuthContext";
+import usePageSEO from "../hooks/usePageSEO";
 import SearchableCitySelect from "../components/common/SearchableCitySelect";
 import { FiChevronDown } from "react-icons/fi";
 import { LuDroplets } from "react-icons/lu";
@@ -44,6 +45,14 @@ const SearchDonorsPage = () => {
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+
+  usePageSEO({
+    title: "Find Blood Donors — LifeDrop",
+    description:
+      "Search verified blood donors near you by city and blood type. LifeDrop connects you with compatible donors instantly.",
+    canonicalPath: "/search-donors",
+  });
+
   const [error, setError] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const [locLoading, setLocLoading] = useState(false);

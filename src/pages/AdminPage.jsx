@@ -11,6 +11,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "../services/firebase";
+import usePageSEO from "../hooks/usePageSEO";
 import {
   FiUsers,
   FiAlertCircle,
@@ -373,6 +374,13 @@ const AdminPage = () => {
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState({ open: false, collection: "", id: "", name: "" });
   const [deleting, setDeleting] = useState(false);
+
+  usePageSEO({
+    title: "Admin Panel — LifeDrop",
+    description:
+      "LifeDrop admin dashboard — manage donors, SOS requests, and platform data.",
+    canonicalPath: "/admin",
+  });
 
   useEffect(() => {
     setLoading(true);

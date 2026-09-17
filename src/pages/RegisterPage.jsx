@@ -13,6 +13,7 @@ import {
   isUsernameTaken,
 } from "../services/authService";
 import { useAuth } from "../store/AuthContext";
+import usePageSEO from "../hooks/usePageSEO";
 import SearchableCitySelect from "../components/common/SearchableCitySelect";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
@@ -64,6 +65,14 @@ const RegisterPage = () => {
   const [location, setLocation] = useState(null);
   const [locLoading, setLocLoading] = useState(false);
   const isSubmitting = useRef(false);
+
+  usePageSEO({
+    title: "Register as Blood Donor — LifeDrop",
+    description:
+      "Join LifeDrop as a verified blood donor. Help save lives across Pakistan by registering your blood type, city, and availability.",
+    canonicalPath: "/register",
+  });
+
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
 

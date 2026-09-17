@@ -10,6 +10,7 @@ import {
   updateUserPassword,
 } from "../services/authService";
 import { useAuth } from "../store/AuthContext";
+import usePageSEO from "../hooks/usePageSEO";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import SearchableCitySelect from "../components/common/SearchableCitySelect";
 
@@ -45,6 +46,13 @@ const DonorProfilePage = () => {
   const [error, setError] = useState("");
   const [location, setLocation] = useState(profile?.location || null);
   const [locLoading, setLocLoading] = useState(false);
+
+  usePageSEO({
+    title: "My Profile — LifeDrop",
+    description:
+      "Manage your LifeDrop donor profile — update your blood type, city, availability, and donation history.",
+    canonicalPath: "/donor-profile",
+  });
 
   // Password change states
   const [passLoading, setPassLoading] = useState(false);

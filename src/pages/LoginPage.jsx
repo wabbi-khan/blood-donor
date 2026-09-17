@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn, signInWithGoogle } from "../services/authService";
 import { useAuth } from "../store/AuthContext";
+import usePageSEO from "../hooks/usePageSEO";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 
@@ -22,6 +23,13 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPass, setShowPass] = useState(false);
+
+  usePageSEO({
+    title: "Sign In — LifeDrop",
+    description:
+      "Sign in to your LifeDrop account to manage your donor profile, respond to SOS alerts, and save lives.",
+    canonicalPath: "/login",
+  });
 
   useEffect(() => {
     if (user && !authLoading) {

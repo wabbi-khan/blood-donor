@@ -15,8 +15,7 @@ const Footer = () => (
           </span>
         </div>
         <p className="text-slate-500 text-sm text-center">
-          Built for Pakistan — Saving lives through instant blood donor
-          matching.
+          Built for Pakistan Saving lives through instant blood donor matching.
         </p>
         <p className="text-slate-600 text-xs">
           &copy; {new Date().getFullYear()} LifeDrop. All rights reserved.

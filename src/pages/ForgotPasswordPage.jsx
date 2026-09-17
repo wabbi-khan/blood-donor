@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordByUsername } from "../services/authService";
+import usePageSEO from "../hooks/usePageSEO";
 
 const forgotPasswordSchema = z.object({
   username: z.string().trim().min(2, "Enter your username"),
@@ -16,6 +17,13 @@ const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  usePageSEO({
+    title: "Reset Password — LifeDrop",
+    description:
+      "Forgot your LifeDrop password? Reset it securely using your registered username.",
+    canonicalPath: "/forgot-password",
+  });
 
   const {
     register,

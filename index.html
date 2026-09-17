@@ -2,18 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/blood-drop.png" />
+    <link rel="icon" type="image/png" href="/blood-drop.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ── Primary SEO ──────────────────────────────────── -->
+    <title>LifeDrop — Emergency Blood Donor Network</title>
     <meta
       name="description"
       content="LifeDrop — Pakistan's Emergency Blood Donor Network. Find compatible blood donors near you instantly with real-time geo-location matching and push notifications."
     />
     <meta
       name="keywords"
-      content="blood donor, emergency blood, Pakistan blood donation, LifeDrop, blood bank, SOS blood"
+      content="blood donor, emergency blood, Pakistan blood donation, LifeDrop, blood bank, SOS blood, khoon, donate blood"
     />
+    <meta name="author" content="LifeDrop" />
+    <meta name="robots" content="index, follow" />
+    <meta name="geo.region" content="PK" />
     <meta name="theme-color" content="#1a1a2e" />
-    <!-- Open Graph -->
+    <!-- Canonical — updated per-page by usePageSEO hook -->
+    <link rel="canonical" href="https://blood-donor-30e89.web.app" />
+
+    <!-- ── Open Graph ─────────────────────────────────────── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LifeDrop" />
     <meta
       property="og:title"
       content="LifeDrop — Emergency Blood Donor Network"
@@ -22,11 +33,40 @@
       property="og:description"
       content="Find compatible blood donors near you instantly. Save lives with real-time geo-location matching."
     />
-    <meta property="og:type" content="website" />
-    <title>LifeDrop — Emergency Blood Donor Network</title>
+    <meta property="og:url" content="https://blood-donor-30e89.web.app" />
+    <meta
+      property="og:image"
+      content="https://blood-donor-30e89.web.app/og-preview.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_PK" />
+
+    <!-- ── Twitter Card ───────────────────────────────────── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="LifeDrop — Emergency Blood Donor Network"
+    />
+    <meta
+      name="twitter:description"
+      content="Find compatible blood donors near you instantly. Save lives with real-time geo-location matching."
+    />
+    <meta
+      name="twitter:image"
+      content="https://blood-donor-30e89.web.app/og-preview.png"
+    />
+
+    <!-- ── Performance: DNS prefetch & preconnect ─────────── -->
+    <link rel="preconnect" href="https://firestore.googleapis.com" />
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com" />
+    <link rel="preconnect" href="https://fcm.googleapis.com" />
+    <link rel="dns-prefetch" href="https://firebaseinstallations.googleapis.com" />
+    <link rel="dns-prefetch" href="https://blood-donor-30e89-default-rtdb.firebaseio.com" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
+

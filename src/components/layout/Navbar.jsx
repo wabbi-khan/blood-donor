@@ -174,6 +174,22 @@ const Navbar = () => {
                 >
                   <div className="py-2 px-2">Find Donors</div>
                 </NavLink>
+                <NavLink
+                  to="/donor-profile"
+                  className={navLinkClass}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <div className="py-2 px-2">My Profile</div>
+                </NavLink>
+                {profile?.role === "admin" && (
+                  <NavLink
+                    to="/admin"
+                    className={navLinkClass}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <div className="py-2 px-2">Admin</div>
+                  </NavLink>
+                )}
                 <button
                   onClick={() => {
                     handleLogout();
